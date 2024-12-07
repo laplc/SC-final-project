@@ -4,6 +4,7 @@ from main_window import Ui_MainWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 from archive_window import archive_MainWindow
 from dashboard_window_function import func_dashboardwindow
+from archive_window_function import func_archive_MainWindow
 
 class Func_MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -21,7 +22,7 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
     
     def pop_archive_window(self):
         #when "archive"is clicked, pop archive window
-        self.subwindow = func_dashboardwindow()
+        self.subwindow = func_archive_MainWindow()
         self.subwindow.show()
 
     def pop_dashboard_window(self):
