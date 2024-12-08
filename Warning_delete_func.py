@@ -1,16 +1,14 @@
 import sys, sqlite3
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QListWidgetItem 
-from main_window import Ui_MainWindow
-from PyQt5 import QtCore, QtGui, QtWidgets
-from dashboard_window import Ui_Dashboard_window
 from Warning_delete import Warning_delete_window
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import pyqtSignal
 
 class Warning_delete_func(QMainWindow, Warning_delete_window):
+    delete_completed = pyqtSignal()
     def __init__(self):
         super().__init__()
         self.setupUi(self) 
-
+        
         self.confirm_button.clicked.connect(self.confirm_delete)
 
     def confirm_delete(self):
@@ -26,5 +24,7 @@ class Warning_delete_func(QMainWindow, Warning_delete_window):
         conn.close()
 
         self.close()
+
+        self.delete_completed.emit()
 
 

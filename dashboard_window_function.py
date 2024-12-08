@@ -19,6 +19,9 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
         self.dashboard_deleteall_button.clicked.connect(self.delete_all)
         self.dashboard_archiveall_button.clicked.connect(self.archive_all)
 
+        self.delete_window = Warning_delete_func()
+        self.delete_window.delete_completed.connect(self.refresh_list)
+
         self.list_content()
         self.set_ui()
     
@@ -61,8 +64,7 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
         '''
             when "delete all" is clicked, pop up a warning window
         '''
-        self.window = Warning_delete_func()
-        self.window.show()
+        self.delete_window.show()
     
     def list_content(self):
         conn = sqlite3.connect('dashboard.db')
@@ -75,6 +77,31 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
             item = QListWidgetItem(row[1])  # row[1] being content
             item.setData(Qt.UserRole, row[0])  # row[0] being id
             self.dashboard_list.addItem(item)
+        
+        conn.close()
+
+    def refresh_list(self):
+        '''
+        refresh the list whenever needed(mainly when everything is deleted or archived)
+        '''
+        self.dashboard_list.clear()
+
+        conn = sqlite3.connect('dashboard.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, content FROM dashboard")
+        rows = cursor.fetchall()
+
+        for row in rows:
+            item = QListWidgetItem(row[1])  # row[1] being content
+            item.setData(Qt.UserRole, row[0])  # row[0] being id
+            self.dashboard_list.addItem(item)
+        
+        conn.close()
+
+
+
+
+
 
             
 
