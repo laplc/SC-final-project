@@ -4,10 +4,9 @@ from main_window import Ui_MainWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 from archive_window import archive_MainWindow
 from dashboard_window import Ui_Dashboard_window
-from Warning_archive import Warning_archive_window
 from Warning_delete import Warning_delete_window
+from Warning_delete_func import Warning_delete_func
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor
 
 class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
     def __init__(self):
@@ -54,16 +53,16 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
     def archive_all(self):
         #pop up warning window
         self.window = QtWidgets.QMainWindow()
-        self.ui = Warning_archive_window()
+        self.ui = Warning_delete_func()
         self.ui.setupUi(self.window)
         self.window.show()
 
     def delete_all(self):
-        self.window = QtWidgets.QMainWindow()
-        self.ui = Warning_delete_window()
-        self.ui.setupUi(self.window)
+        '''
+            when "delete all" is clicked, pop up a warning window
+        '''
+        self.window = Warning_delete_func()
         self.window.show()
-        None
     
     def list_content(self):
         conn = sqlite3.connect('dashboard.db')
@@ -71,18 +70,11 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
 
         cursor.execute("SELECT id, content FROM dashboard")
         rows = cursor.fetchall()
-        i = 0
 
         for row in rows:
             item = QListWidgetItem(row[1])  # row[1] being content
             item.setData(Qt.UserRole, row[0])  # row[0] being id
             self.dashboard_list.addItem(item)
-
-            # i = i+1
-            # if i % 2 == 0:
-            #     item.setBackground(QColor("lightgray"))
-            # else:
-            #     item.setBackground(QColor('white'))
 
             
 
