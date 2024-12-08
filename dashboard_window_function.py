@@ -7,6 +7,7 @@ from dashboard_window import Ui_Dashboard_window
 from Warning_archive import Warning_archive_window
 from Warning_delete import Warning_delete_window
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor
 
 class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
     def __init__(self):
@@ -20,6 +21,20 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
         self.dashboard_archiveall_button.clicked.connect(self.archive_all)
 
         self.list_content()
+        self.set_ui()
+    
+    def set_ui(self):
+        self.dashboard_list.setStyleSheet("""
+            QListWidget::item {
+                border-bottom: 1px solid lightgray;  
+                padding: 0px;                       
+            }
+            
+            QListWidget::item:selected {
+                background: lightblue;          
+            }
+           
+            """)
 
     def archive(self):
         None
@@ -56,11 +71,23 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
 
         cursor.execute("SELECT id, content FROM dashboard")
         rows = cursor.fetchall()
+        i = 0
 
         for row in rows:
             item = QListWidgetItem(row[1])  # row[1] being content
             item.setData(Qt.UserRole, row[0])  # row[0] being id
             self.dashboard_list.addItem(item)
+
+            # i = i+1
+            # if i % 2 == 0:
+            #     item.setBackground(QColor("lightgray"))
+            # else:
+            #     item.setBackground(QColor('white'))
+
+            
+
+            
+
 
 # if __name__ == "__main__":
 #     import sys
