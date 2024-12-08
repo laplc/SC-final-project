@@ -1,11 +1,12 @@
 import sys, sqlite3
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QListWidgetItem 
 from main_window import Ui_MainWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 from archive_window import archive_MainWindow
 from dashboard_window import Ui_Dashboard_window
 from Warning_archive import Warning_archive_window
 from Warning_delete import Warning_delete_window
+from PyQt5.QtCore import Qt
 
 class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
     def __init__(self):
@@ -24,7 +25,16 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
         None
 
     def delete(self):
-        None
+        selected_item = self.dashboard_list.currentItem()
+        if selected_item:
+            conn = sqlite3.connect('dashboard.db')
+            cursor = conn.cursor()
+            record_id = selected_item.data(Qt.UserRole)
+            cursor.execute("DELETE FROM dashboard WHERE id = ?", (record_id,))
+            conn.commit()
+            conn.close()
+
+            self.dashboard_list.takeItem(self.dashboard_list.row(selected_item))
 
     def archive_all(self):
         #pop up warning window
@@ -44,11 +54,13 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
         conn = sqlite3.connect('dashboard.db')
         cursor = conn.cursor()
 
-        cursor.execute("SELECT content FROM dashboard")
+        cursor.execute("SELECT id, content FROM dashboard")
         rows = cursor.fetchall()
 
         for row in rows:
-            self.dashboard_list.addItem(row[0])
+            item = QListWidgetItem(row[1])  # row[1] being content
+            item.setData(Qt.UserRole, row[0])  # row[0] being id
+            self.dashboard_list.addItem(item)
 
 # if __name__ == "__main__":
 #     import sys
