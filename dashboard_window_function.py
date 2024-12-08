@@ -1,4 +1,4 @@
-import sys
+import sys, sqlite3
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from main_window import Ui_MainWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -18,6 +18,7 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
         self.dashboard_deleteall_button.clicked.connect(self.delete_all)
         self.dashboard_archiveall_button.clicked.connect(self.archive_all)
 
+        self.list_content()
 
     def archive(self):
         None
@@ -38,12 +39,22 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
         self.ui.setupUi(self.window)
         self.window.show()
         None
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
     
-    window = func_dashboardwindow()
-    window.show()
+    def list_content(self):
+        conn = sqlite3.connect('dashboard.db')
+        cursor = conn.cursor()
 
-    sys.exit(app.exec_())
+        cursor.execute("SELECT content FROM dashboard")
+        rows = cursor.fetchall()
+
+        for row in rows:
+            self.dashboard_list.addItem(row[0])
+
+# if __name__ == "__main__":
+#     import sys
+#     app = QtWidgets.QApplication(sys.argv)
+    
+#     window = func_dashboardwindow()
+#     window.show()
+
+#     sys.exit(app.exec_())
