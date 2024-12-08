@@ -9,10 +9,10 @@ class archive_window_function(archive_MainWindow, QMainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-
         self.list_content()
-
         self.set_ui()
+
+        self.archive_delete.clicked.connect(self.delete)
 
     def list_content(self):
         conn = sqlite3.connect('archive.db')
@@ -41,3 +41,14 @@ class archive_window_function(archive_MainWindow, QMainWindow):
            
             """)
 
+    def delete(self):
+        selected_item = self.listView.currentItem()
+        if selected_item:
+            conn = sqlite3.connect('archive.db')
+            cursor = conn.cursor()
+            record_id = selected_item.data(Qt.UserRole)
+            cursor.execute("DELETE FROM archive WHERE id = ?", (record_id,))
+            conn.commit()
+            conn.close()
+
+            self.listView.takeItem(self.listView.row(selected_item))
