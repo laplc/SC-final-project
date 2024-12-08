@@ -10,6 +10,7 @@ class Warning_delete_func(QMainWindow, Warning_delete_window):
         self.setupUi(self) 
         
         self.confirm_button.clicked.connect(self.confirm_delete)
+        self.dismiss_button.clicked.connect(self.dismiss)
 
     def confirm_delete(self):
         '''
@@ -26,5 +27,9 @@ class Warning_delete_func(QMainWindow, Warning_delete_window):
         self.close()
 
         self.delete_completed.emit()
-
+    
+    def dismiss(self):
+        self.close()
+    
+    
 

@@ -5,6 +5,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from archive_window import archive_MainWindow
 from dashboard_window import Ui_Dashboard_window
 from Warning_delete_func import Warning_delete_func
+from Warning_archive_func import Warning_archive_func
 from PyQt5.QtCore import Qt
 
 class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
@@ -19,7 +20,10 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
         self.dashboard_archiveall_button.clicked.connect(self.archive_all)
 
         self.delete_window = Warning_delete_func()
+        self.archive_window = Warning_archive_func()
+
         self.delete_window.delete_completed.connect(self.refresh_list)
+        self.archive_window.archive_completed.connect(self.refresh_list)
 
 
         self.list_content()
@@ -54,7 +58,9 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
             time = time[0]
             #delete archived content from the list and dashboard db
             cursor_dashboard.execute("DELETE FROM dashboard WHERE id = ?", (record_id,)) 
+            conn_dashboard.commit()
             self.dashboard_list.takeItem(self.dashboard_list.row(selected_item))
+            conn_dashboard.close()
 
             conn_archive = sqlite3.connect('archive.db')
             cursor_archive = conn_archive.cursor()
@@ -72,12 +78,6 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
             conn_archive.commit()
             conn_archive.close()
 
-            #delete archived content from the list
-
-
-
-            
-
     def delete(self):
         selected_item = self.dashboard_list.currentItem()
         if selected_item:
@@ -92,10 +92,7 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
 
     def archive_all(self):
         #pop up warning window
-        self.window = QtWidgets.QMainWindow()
-        self.ui = Warning_delete_func()
-        self.ui.setupUi(self.window)
-        self.window.show()
+        self.archive_window.show()
 
     def delete_all(self):
         '''
