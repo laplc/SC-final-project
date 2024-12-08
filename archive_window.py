@@ -18,7 +18,7 @@ class archive_MainWindow(object):
         MainWindow.resize(585, 453)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.listView = QtWidgets.QListView(self.centralwidget)
+        self.listView = QtWidgets.QListWidget(self.centralwidget)
         self.listView.setGeometry(QtCore.QRect(30, 30, 541, 361))
         self.listView.setObjectName("listView")
         self.frame = QtWidgets.QFrame(self.centralwidget)
