@@ -31,7 +31,7 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
 
     def getText(self):
         '''       
-        when "save or later" button is clicked, save this into database:
+        when "save for later" button is clicked, save this into database:
             1-the content
             2-the time
         '''        

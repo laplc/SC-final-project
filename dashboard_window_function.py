@@ -4,7 +4,6 @@ from main_window import Ui_MainWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 from archive_window import archive_MainWindow
 from dashboard_window import Ui_Dashboard_window
-from Warning_delete import Warning_delete_window
 from Warning_delete_func import Warning_delete_func
 from PyQt5.QtCore import Qt
 
@@ -21,6 +20,7 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
 
         self.delete_window = Warning_delete_func()
         self.delete_window.delete_completed.connect(self.refresh_list)
+
 
         self.list_content()
         self.set_ui()
@@ -39,7 +39,44 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
             """)
 
     def archive(self):
-        None
+        '''
+        move content from dashboard db to archive db
+        '''
+        selected_item = self.dashboard_list.currentItem()
+        if selected_item:
+            content = selected_item.text()
+            record_id = selected_item.data(Qt.UserRole)
+
+            conn_dashboard = sqlite3.connect('dashboard.db')
+            cursor_dashboard = conn_dashboard.cursor()
+            cursor_dashboard.execute("SELECT time FROM dashboard WHERE id = ?", (record_id,))
+            time = cursor_dashboard.fetchone()
+            time = time[0]
+            #delete archived content from the list and dashboard db
+            cursor_dashboard.execute("DELETE FROM dashboard WHERE id = ?", (record_id,)) 
+            self.dashboard_list.takeItem(self.dashboard_list.row(selected_item))
+
+            conn_archive = sqlite3.connect('archive.db')
+            cursor_archive = conn_archive.cursor()
+            cursor_archive.execute('''
+            CREATE TABLE IF NOT EXISTS archive (
+                id INTEGER PRIMARY KEY,
+                content TEXT NOT NULL,
+                time TEXT NOT NULL
+            )
+            ''')
+            cursor_archive.execute(
+                '''INSERT INTO archive (content, time)
+                VALUES (?, ?)'''
+                , (content, time))
+            conn_archive.commit()
+            conn_archive.close()
+
+            #delete archived content from the list
+
+
+
+            
 
     def delete(self):
         selected_item = self.dashboard_list.currentItem()
