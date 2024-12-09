@@ -7,7 +7,7 @@ from dashboard_window_function import func_dashboardwindow
 from archive_window_function import archive_window_function
 from PyQt5.QtGui import QColor, QBrush
 from PyQt5.QtCore import Qt
-from TaskItem import TaskItemBase, TaskItemWithCheckbox
+from TaskItem import TaskItemWithCheckbox, TaskItemWithoutCheckbox
 
 class Func_MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -16,7 +16,7 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         self.colors = {
             "Deadline": QColor(255, 200, 200), 
             "Todo": QColor(200, 255, 200),     
-            "Arrangement": QColor(255, 255, 200), 
+            "Arrangement": QColor(255, 243, 108), 
             "Event": QColor(255, 255, 255)         
         }
         self.comboBox.addItems(["Deadline", "Todo", "Event", "Arrangement"])
@@ -109,77 +109,7 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
 
             self.add_task.clear()
 
-    # def refresh_list(self):
-    #     '''
-    #         on page2
-    #         refresh the list whenever a new date is selected
-    #         1. if category is "todo", add a checkbox 
-    #         2. other categories are listed first without checkboxes.
-    #         get info from database and display the list
-    #     '''
-    #     self.task_list.clear()
-    #     conn = sqlite3.connect('task.db')
-    #     cursor = conn.cursor()
-    #     date_selected = self.calendarWidget.selectedDate().toPyDate()
-
-    #     query = "SELECT task, category, completed FROM tasks WHERE date = ?"
-    #     cursor.execute(query, (date_selected,))
-    #     tasks = cursor.fetchall()  
-
-    #     deadlines = []  
-    #     todos = []     
-    #     arrangements = [] 
-    #     events = []        
-
-    #     for task, category, completed in tasks:
-    #         if category == "Deadline":
-    #             deadlines.append((task, category, completed))
-    #         elif category == "Todo":
-    #             todos.append((task, category, completed))
-    #         elif category == "Arrangement":
-    #             arrangements.append((task, category))
-    #         elif category == "Event":
-    #             events.append((task, category))
-
-    #     for task, category, completed in deadlines:
-    #         self.add_task_with_checkbox(task, "deadline", completed)
-    #     for task, category in arrangements:
-    #         self.add_task_without_checkbox(task, "arrangement")
-    #     for task, category in events:
-    #         self.add_task_without_checkbox(task, "event")
-    #     for task, category, completed in todos:
-    #         self.add_task_with_checkbox(task, "todo", completed)
-
-        
-    # def add_task_with_checkbox(self, task, category, completed):
-    #     '''
-    #         create task item in desired formt with checkbox and delete button
-    #     '''
-    #     item_widget = QWidget()
-    #     layout = QHBoxLayout()
-    #     checkbox = QCheckBox()
-    #     checkbox.setText(task)
-    #     layout.addWidget(checkbox)
-    #     layout.setContentsMargins(0, 0, 0, 0)
-    #     item_widget.setLayout(layout)
-
-    #     item = QListWidgetItem(self.task_list)
-    #     item.setSizeHint(item_widget.sizeHint())
-    #     item.setBackground(QBrush(self.colors[category]))  #use different colors for different task categories
-    #     self.task_list.addItem(item)
-    #     self.task_list.setItemWidget(item, item_widget)
-    #     checkbox.setChecked(completed == 'YES')
-
-    #     checkbox.stateChanged.connect(lambda state: self.update_task_status(task, state)) #record it when status is changed
     
-    # def add_task_without_checkbox(self, task, category):
-    #     '''
-    #         create task item in desired formt with delete button
-    #     '''
-    #     item = QListWidgetItem(task)
-    #     item.setBackground(QBrush(self.colors[category]))  
-    #     self.task_list.addItem(item)
-
     def refresh_list(self):
         self.task_list.clear()
         conn = sqlite3.connect('task.db')
@@ -192,16 +122,17 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         conn.close()
 
         for task, category, completed in tasks:
-            if category == "Todo":
+            if category in ['Todo','Deadline']:
                 widget = TaskItemWithCheckbox(task, category, completed, self.colors, self.task_list, self.update_task_status)
             else:
-                widget = TaskItemBase(task, category, self.colors, self.task_list)
+                widget = TaskItemWithoutCheckbox(task, category, self.colors, self.task_list)
 
             item = QListWidgetItem(self.task_list)
             item.setSizeHint(widget.sizeHint())
-            item.setBackground(QBrush(self.colors[category]))
+            # item.setBackground(QBrush(self.colors[category]))
             self.task_list.addItem(item)
             self.task_list.setItemWidget(item, widget)
+        
 
     def update_task_status(self, task, state):
         '''
