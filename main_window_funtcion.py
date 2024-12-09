@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QListWidgetItem
 from dashboard_window_function import func_dashboardwindow
 from archive_window_function import archive_window_function
 from PyQt5.QtGui import QColor
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QDate
 from TaskItem import TaskItemWithCheckbox, TaskItemWithoutCheckbox
 
 class Func_MainWindow(QMainWindow, Ui_MainWindow):
@@ -28,7 +28,10 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
 
         #connect signals to functions -page2
         self.comboBox.activated.connect(self.new_task)
+        self.comboBox.activated.connect(self.refresh_calendar)
         self.calendarWidget.selectionChanged.connect(self.refresh_list)
+
+        self.refresh_calendar()
 
     
     def pop_archive_window(self):
@@ -81,6 +84,7 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             store tasks into a database after clicking combobox
         '''
         task_text = self.add_task.toPlainText()
+        self.refresh_calendar()
 
         if task_text:
             conn = sqlite3.connect('task.db')
@@ -112,7 +116,9 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
 
     
     def refresh_list(self):
-        self.task_list.clear()
+        self.task_list.clear() #clear task list
+        #refresh calendar
+
         conn = sqlite3.connect('task.db')
         cursor = conn.cursor()
         date_selected = self.calendarWidget.selectedDate().toPyDate()
@@ -148,7 +154,34 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         conn.commit()
         conn.close()
 
+    def get_task_dates(self):
+        """
+        get info from database
+        """
+        conn = sqlite3.connect('task.db')
+        cursor = conn.cursor()
 
+        query = "SELECT date, category FROM tasks"
+        cursor.execute(query)
+        tasks = cursor.fetchall()
+        conn.close()
+
+        date_task_map = {}
+        for task_date, category in tasks:
+            qdate = QDate.fromString(task_date, "yyyy-MM-dd")
+            if not qdate.isValid():
+                continue  
+
+            if qdate not in date_task_map:
+                date_task_map[qdate] = set()
+            date_task_map[qdate].add(category)
+
+        return date_task_map
+
+    def refresh_calendar(self):
+        task_dates = self.get_task_dates()
+        self.calendarWidget.set_task_dates(task_dates)
+        self.calendarWidget.update()
 
 
 if __name__ == "__main__":

@@ -9,6 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from CustomCalender import CustomCalendar
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -64,7 +65,7 @@ class Ui_MainWindow(object):
         self.page2_tab.setObjectName("page2_tab")
 
         #replace with a custom calender
-        self.calendarWidget = QtWidgets.QCalendarWidget(self.page2_tab)
+        self.calendarWidget = CustomCalendar(self.page2_tab)
         self.calendarWidget.setGeometry(QtCore.QRect(30, 70, 411, 421))
         font = QtGui.QFont()
         font.setFamily("Agency FB")
