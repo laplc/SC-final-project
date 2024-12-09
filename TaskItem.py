@@ -10,7 +10,7 @@ font = QFont()
 font.setPointSize(12)
 
 class TaskItemBase(QWidget):
-    def __init__(self, task, category, colors, list_widget, parent=None):
+    def __init__(self, task, category, colors, list_widget, on_task_deleted=None, parent=None):
         super().__init__(parent)
         self.task = task
         self.category = str(category)
@@ -33,6 +33,8 @@ class TaskItemBase(QWidget):
 
         # track mouse location to display delete button
         self.setMouseTracking(True)
+
+        self.on_task_deleted = on_task_deleted
 
     def enterEvent(self, event):
         '''
@@ -63,6 +65,9 @@ class TaskItemBase(QWidget):
             if self.list_widget.itemWidget(item) == self:
                 self.list_widget.takeItem(i)
                 break
+        
+        if self.on_task_deleted:
+            self.on_task_deleted()
     
     def paintEvent(self, event):
         
@@ -74,17 +79,18 @@ class TaskItemBase(QWidget):
         super().paintEvent(event)
 
 class TaskItemWithoutCheckbox(TaskItemBase):
-    def __init__(self, task, category, colors, list_widget, parent=None):
-        super().__init__(task, category, colors, list_widget, parent) 
+    def __init__(self, task, category, colors, list_widget, on_task_deleted=None, parent=None):
+        super().__init__(task, category, colors, list_widget, on_task_deleted=on_task_deleted, parent=parent)
         self.label = QLabel(self.task)
         self.label.setTextInteractionFlags(Qt.NoTextInteraction)
         self.label.setStyleSheet("color: black;")  
         self.label.setFont(font)
         self.layout.insertWidget(0, self.label)
 
+
 class TaskItemWithCheckbox(TaskItemBase):
-    def __init__(self, task, category, completed, colors, list_widget, update_status_callback, parent=None):
-        super().__init__(task, category, colors, list_widget, parent) 
+    def __init__(self, task, category, completed, colors, list_widget, update_status_callback, on_task_deleted=None, parent=None):
+        super().__init__(task, category, colors, list_widget, on_task_deleted=on_task_deleted, parent=parent)
         self.checkbox = QCheckBox(task)
         self.checkbox.setChecked(completed == 'YES')
         self.checkbox.stateChanged.connect(
@@ -92,3 +98,4 @@ class TaskItemWithCheckbox(TaskItemBase):
         )
         self.checkbox.setFont(font)
         self.layout.insertWidget(0, self.checkbox)
+

@@ -9,28 +9,24 @@ class CustomCalendar(QCalendarWidget):
 
     def set_task_dates(self, task_dates):
         self.task_dates = task_dates
-        print("Updated task_dates:", self.task_dates)
 
-        # 清除所有日期样式（可选）
         self.setDateTextFormat(QDate(), QTextCharFormat())
 
-        # 强制刷新整个日历
         self.update()
 
     def paintCell(self, painter, rect, date):
         """
         """
         super().paintCell(painter, rect, date)  #default painting
-        print('222')
 
         # check for task
         if date in self.task_dates:
             categories = self.task_dates[date]
             colors = {
-                "Deadline": QColor(255, 0, 0),  # 红色
-                "Todo": QColor(0, 255, 0),     # 绿色
-                "Arrangement": QColor(0, 0, 255),  # 蓝色
-                "Event": QColor(0, 0, 255),    # 蓝色
+                "Deadline": QColor(255, 0, 0), 
+                "Todo": QColor(0, 255, 0),    
+                "Arrangement": QColor(0, 0, 255),  
+                "Event": QColor(0, 0, 255),   
             }
 
             radius = 4  

@@ -130,9 +130,16 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
 
         for task, category, completed in tasks:
             if category in ['Todo','Deadline']:
-                widget = TaskItemWithCheckbox(task, category, completed, self.colors, self.task_list, self.update_task_status)
+                widget = TaskItemWithCheckbox(
+                task, category, completed, self.colors, self.task_list, 
+                self.update_task_status, 
+                on_task_deleted=self.refresh_calendar 
+            )
             else:
-                widget = TaskItemWithoutCheckbox(task, category, self.colors, self.task_list)
+                widget = TaskItemWithoutCheckbox(
+                    task, category, self.colors, self.task_list, 
+                    on_task_deleted=self.refresh_calendar  # 指定主窗口的回调方法
+                )
 
             item = QListWidgetItem(self.task_list)
             item.setSizeHint(widget.sizeHint())
