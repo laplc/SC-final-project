@@ -108,6 +108,7 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             conn.close()
 
             self.add_task.clear()
+            self.refresh_list()
 
     
     def refresh_list(self):

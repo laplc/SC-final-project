@@ -14,7 +14,6 @@ class TaskItemBase(QWidget):
         super().__init__(parent)
         self.task = task
         self.category = str(category)
-        print(type(category))
         self.colors = {
             "Deadline": QColor(255, 200, 200), 
             "Todo": QColor(200, 255, 200),     
@@ -66,7 +65,7 @@ class TaskItemBase(QWidget):
                 break
     
     def paintEvent(self, event):
-        """根据任务类别绘制背景颜色"""
+        
         painter = QtGui.QPainter(self)
         color = self.colors.get(self.category, QColor(255, 255, 255))
         painter.setBrush(color)
@@ -74,49 +73,18 @@ class TaskItemBase(QWidget):
         painter.drawRect(self.rect())  
         super().paintEvent(event)
 
-# class TaskItemWithoutCheckbox(TaskItemBase):
-#     '''
-#         this class inherits from the TaskItemBase class, adding a tag
-#     '''
-#     def __init__(self, task, category, colors, list_widget, parent=None):
-#         super().__init__(category, colors, list_widget, parent)
-#         self.task = task
-
-#         self.label = QLabel(self.task)
-#         self.label.setTextInteractionFlags(Qt.NoTextInteraction)
-#         self.label.setStyleSheet("")  
-
-#         self.label.setStyleSheet("color: black;")
-#         self.label.setFont(font)
-#         self.layout.insertWidget(0, self.label)
-        
-# class TaskItemWithCheckbox(TaskItemBase):
-#     '''
-#         this class inherits from the TaskItemBase class, adding a checkbox
-#     '''
-#     def __init__(self, task, category, completed, colors, list_widget, update_status_callback, parent=None):
-#         super().__init__(task, category, colors, list_widget, parent)
-
-#         self.checkbox = QCheckBox(task)
-#         self.checkbox.setChecked(completed == 'YES')
-#         self.checkbox.stateChanged.connect(
-#             lambda state: update_status_callback(self.task, state)
-#         )
-#         self.checkbox.setFont(font)
-#         self.layout.insertWidget(0, self.checkbox) 
-
 class TaskItemWithoutCheckbox(TaskItemBase):
     def __init__(self, task, category, colors, list_widget, parent=None):
-        super().__init__(task, category, colors, list_widget, parent)  # 修复参数传递
+        super().__init__(task, category, colors, list_widget, parent) 
         self.label = QLabel(self.task)
         self.label.setTextInteractionFlags(Qt.NoTextInteraction)
-        self.label.setStyleSheet("color: black;")  # 确保文字为黑色
+        self.label.setStyleSheet("color: black;")  
         self.label.setFont(font)
         self.layout.insertWidget(0, self.label)
 
 class TaskItemWithCheckbox(TaskItemBase):
     def __init__(self, task, category, completed, colors, list_widget, update_status_callback, parent=None):
-        super().__init__(task, category, colors, list_widget, parent)  # 无需修改
+        super().__init__(task, category, colors, list_widget, parent) 
         self.checkbox = QCheckBox(task)
         self.checkbox.setChecked(completed == 'YES')
         self.checkbox.stateChanged.connect(
