@@ -1,8 +1,7 @@
 import sys, sqlite3
 from datetime import datetime
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
-from main_window import Ui_MainWindow
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QApplication, QMainWindow
+from main_window_1 import Ui_MainWindow
 from dashboard_window_function import func_dashboardwindow
 from archive_window_function import archive_window_function
 
@@ -11,12 +10,14 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)  
 
+        self.comboBox.addItems(["Deadline", "Todo", "Event", "Arrangement"])
         #connect signals to functions-page1
         self.archive_button.clicked.connect(self.pop_archive_window)
         self.dashboard_button.clicked.connect(self.pop_dashboard_window)
         self.add_text.clicked.connect(self.getText)
 
         #connect signals to functions -page2
+        self.comboBox.activated.connect(self.new_task)
 
     
     def pop_archive_window(self):
@@ -30,7 +31,8 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         self.subwindow.show()
 
     def getText(self):
-        '''       
+        '''
+        on page 1       
         when "save for later" button is clicked, save this into database:
             1-the content
             2-the time
@@ -61,6 +63,36 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             conn.close()
 
             self.textEdit.clear()
+
+    def new_task(self):
+        
+        task_text = self.add_task.toPlainText()
+
+        if task_text:
+            conn = sqlite3.connect('task.db')
+            cursor = conn.cursor()
+            date_selected = self.calendarWidget.selectedDate().toPyDate()
+            category = self.comboBox.currentText()
+
+            cursor.execute('''
+            CREATE TABLE IF NOT EXISTS task (
+                id INTEGER PRIMARY KEY,
+                task TEXT NOT NULL,
+                date TEXT NOT NULL,
+                category TEXT NOT NULL
+            )
+            ''')
+
+            cursor.execute('''
+            INSERT INTO task (task, date, category)
+            VALUES(?,?,?)
+            ''',
+            (task_text, date_selected, category))
+
+            conn.commit()
+            conn.close()
+
+            self.add_task.clear()
 
 
 if __name__ == "__main__":
