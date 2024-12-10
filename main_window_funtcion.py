@@ -235,6 +235,8 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             conn.close()
 
             self.textEdit_2.clear()
+            self.load_tracker()
+
 
     def load_tracker(self):
         '''
@@ -280,7 +282,6 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         '''
             switch timer: stop or go
         '''
-        print('timing')
         for i in range(self.Focus_list.count()):
             item = self.Focus_list.item(i)
             task_widget = self.Focus_list.itemWidget(item)

@@ -25,7 +25,7 @@ class TaskItemWidget(QWidget):
         self.delete_button.setFixedSize(25, 25)
         self.layout.addWidget(self.delete_button)
 
-        self.total_time = total_time  # 累计时间（秒）
+        self.total_time = total_time  
         self.timer_callback = timer_callback
         self.delete_callback = delete_callback
 

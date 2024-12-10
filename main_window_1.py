@@ -73,7 +73,7 @@ class Ui_MainWindow(object):
         self.calendarWidget.setFont(font)
         self.calendarWidget.setObjectName("calendarWidget")
 
-        #----------------------------
+        #-----------------------page2-------------------
 
         self.task_list = QtWidgets.QListWidget(self.page2_tab)
         self.task_list.setGeometry(QtCore.QRect(470, 110, 271, 271))
@@ -89,7 +89,7 @@ class Ui_MainWindow(object):
         #-------------page3--------------------
         self.page3_tab = QtWidgets.QWidget()
         self.page3_tab.setObjectName("page3_tab")
-        self.Focus_list = QtWidgets.QListView(self.page3_tab)
+        self.Focus_list = QtWidgets.QListWidget(self.page3_tab)
         self.Focus_list.setGeometry(QtCore.QRect(130, 130, 511, 311))
         self.Focus_list.setObjectName("Focus_list")
         self.textEdit_2 = QtWidgets.QTextEdit(self.page3_tab)
