@@ -298,6 +298,7 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
                     self.current_task_widget = task_widget
                     self.current_task_label.setText(f"Focusing on: {task_widget.task_button.text().split(' - ')[0]}")
                     self.timer.start()
+                    self.update_progress_bar() 
                 return
     
     def update_current_task_time(self):
@@ -307,6 +308,8 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         if self.current_task_widget:
             self.current_task_widget.total_time += 1  #increase every 1s
             self.current_task_widget.update_time()
+            self.update_progress_bar()  
+
 
             # add to database
             conn = sqlite3.connect('tracker.db')
@@ -317,6 +320,29 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             )
             conn.commit()
             conn.close()
+
+    def update_progress_bar(self):
+        total_time = sum(task.total_time for task in self.get_all_tasks())
+        if total_time == 0:
+            self.progressBar.set_tasks([], [])
+            return
+
+        task_ratios = [task.total_time / total_time for task in self.get_all_tasks()]
+        task_colors = ["#FF9999", "#99CCFF", "#FFCC99", "#66CC66"] 
+
+        # self.progressBar.set_tasks(task_ratios, task_colors)
+        self.progressBar.set_tasks([0.6, 0.4], ["#FFCC99", "#99CCFF"])
+
+    def get_all_tasks(self):
+        tasks = []
+        for i in range(self.Focus_list.count()):
+            item = self.Focus_list.item(i)
+            task_widget = self.Focus_list.itemWidget(item)  
+            tasks.append(task_widget)
+        return tasks
+    
+ 
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

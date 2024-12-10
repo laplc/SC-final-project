@@ -10,6 +10,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from CustomCalender import CustomCalendar
+from MultiTaskProgressBar import MultiTaskProgressBar
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -118,6 +119,9 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.page_tabs.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.progressBar = MultiTaskProgressBar(self.page3_tab)
+        self.progressBar.setGeometry(QtCore.QRect(130, 50, 511, 20))  
+        self.progressBar.setObjectName("progressBar")
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
