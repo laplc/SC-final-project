@@ -83,7 +83,7 @@ class Ui_MainWindow(object):
         self.add_task.setGeometry(QtCore.QRect(480, 400, 201, 41))
         self.add_task.setObjectName("add_task")
         self.comboBox = QtWidgets.QComboBox(self.page2_tab)
-        self.comboBox.setGeometry(QtCore.QRect(690, 400, 51, 41))
+        self.comboBox.setGeometry(QtCore.QRect(690, 400, 72, 41))
         self.comboBox.setObjectName("comboBox")
         self.page_tabs.addTab(self.page2_tab, "")
 
