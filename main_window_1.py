@@ -30,9 +30,11 @@ class Ui_MainWindow(object):
         self.page_tabs.setStyleSheet("""
                 QTabWidget::pane {
                         border: 1px solid lightgray; 
+                        background: #FFFAF0; 
                 }
                 QTabBar::tab {
                         color: black;
+                        background: #FFFAF0;
                         font-size: 14px;
                         padding: 10px 10px;
                         min-width: 80px; 
@@ -49,11 +51,15 @@ class Ui_MainWindow(object):
                         background: #D3D3D3; 
                 }
                 """)
-
         self.page_tabs.setObjectName("page_tabs")
         self.page1_tab = QtWidgets.QWidget()
         self.page1_tab.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         self.page1_tab.setObjectName("page1_tab")
+        # self.page1_tab.setStyleSheet("""
+        # QWidget {
+        #         background-color: #FFFAF0;  
+        # }
+        # """)
         self.frame_2 = QtWidgets.QFrame(self.page1_tab)
         self.frame_2.setGeometry(QtCore.QRect(0, 480, 791, 131))
         self.frame_2.setStyleSheet("QFrame{\n"
@@ -68,6 +74,21 @@ class Ui_MainWindow(object):
         font.setPointSize(16)
         self.archive_button.setFont(font)
         self.archive_button.setObjectName("archive_button")
+        self.archive_button.setStyleSheet("""
+        QPushButton {
+                background-color: #99CCFF;
+                color: black;
+                font-weight: bold;
+                border-radius: 10px;
+                padding: 5px;
+        }
+        QPushButton:hover {
+                background-color: #66B2FF;
+        }
+        QPushButton:pressed {
+                background-color: #3399FF;
+        }
+        """)
         self.dashboard_button = QtWidgets.QPushButton(self.frame_2)
         self.dashboard_button.setGeometry(QtCore.QRect(540, 30, 111, 26))
         font = QtGui.QFont()
@@ -75,11 +96,67 @@ class Ui_MainWindow(object):
         font.setPointSize(16)
         self.dashboard_button.setFont(font)
         self.dashboard_button.setObjectName("dashboard_button")
+        self.dashboard_button.setStyleSheet("""
+         QPushButton {
+                background-color: #99CCFF;  
+                color: black;               
+                font-weight: bold;         
+                border-radius: 10px;        
+                padding: 5px;               
+        }
+        QPushButton:hover {
+                background-color: #66B2FF; 
+        }
+        QPushButton:pressed {
+                background-color: #3399FF;
+        }
+        """
+        )
         self.textEdit = QtWidgets.QTextEdit(self.page1_tab)
+        self.textEdit.setStyleSheet("""
+        QTextEdit {
+                font-size: 16px;  
+                font-family: Arial;  
+                color: #333333;  
+                background-color: #FFFFE0;  
+                border: 1px solid #CCCCCC;  
+                padding: 10px;  
+                border-radius: 15px;         
+        }
+        """)
+        self.textEdit_title = QtWidgets.QLabel(self.page1_tab)
+        self.textEdit_title.setGeometry(QtCore.QRect(190, 100, 400, 30))  
+        self.textEdit_title.setText("What's on your mind?")  
+        self.textEdit_title.setAlignment(QtCore.Qt.AlignCenter) 
+        self.textEdit_title.setStyleSheet("""
+        QLabel {
+                font-size: 20px; 
+                font-weight: bold; 
+                color: #333333; 
+        }
+        """)
+
+
         self.textEdit.setGeometry(QtCore.QRect(190, 170, 401, 141))
         self.textEdit.setObjectName("textEdit")
+
         self.add_text = QtWidgets.QPushButton(self.page1_tab)
-        self.add_text.setGeometry(QtCore.QRect(440, 310, 151, 28))
+        self.add_text.setStyleSheet("""
+        QPushButton {
+                background-color: #FFFF99;  
+                color: black;               
+                font-weight: bold;        
+                border-radius: 10px;     
+                padding: 5px;               
+        }
+        QPushButton:hover {
+                background-color: #FFFF66;  
+        }
+        QPushButton:pressed {
+                background-color: #CCCC33;
+        }"""
+        )
+        self.add_text.setGeometry(QtCore.QRect(440, 313, 151, 28))
         self.add_text.setObjectName("add_text")
         self.page_tabs.addTab(self.page1_tab, "")
         self.page2_tab = QtWidgets.QWidget()
