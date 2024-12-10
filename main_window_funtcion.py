@@ -341,6 +341,20 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             conn.close()
 
     def update_progress_bar(self):
+        def generate_colors(num_colors):
+            """
+            Generate a list of distinct colors.
+            """
+            import colorsys
+            colors = []
+            for i in range(num_colors):
+                hue = i / max(num_colors, 1)  # Evenly distribute hues
+                lightness = 0.7  # Adjust lightness for visibility
+                saturation = 0.8  # Adjust saturation for vivid colors
+                r, g, b = colorsys.hls_to_rgb(hue, lightness, saturation)
+                colors.append(f"#{int(r*255):02X}{int(g*255):02X}{int(b*255):02X}")
+            return colors
+
         tasks = self.get_all_tasks()
         total_time = sum(task.total_time for task in tasks)
         if total_time == 0:
@@ -348,7 +362,7 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             return
 
         task_ratios = [task.total_time / total_time for task in self.get_all_tasks()]
-        task_colors = ["#FF9999", "#99CCFF", "#FFCC99", "#66CC66"][:len(task_ratios)]
+        task_colors = generate_colors(len(tasks))
         task_names = [task.task_button.text().split(" - ")[0] for task in tasks]
         self.progressBar.set_tasks(task_ratios, task_colors, task_names)
 
