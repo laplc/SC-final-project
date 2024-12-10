@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QListWidgetItem
 from dashboard_window_function import func_dashboardwindow
 from archive_window_function import archive_window_function
 from PyQt5.QtGui import QColor
-from PyQt5.QtCore import Qt, QDate
+from PyQt5.QtCore import Qt, QDate, QTimer
 from TaskItem import TaskItemWithCheckbox, TaskItemWithoutCheckbox
 from TaskItemWidget import TaskItemWidget
 from PyQt5 import QtCore
@@ -40,6 +40,10 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         self.Add_new_button.clicked.connect(self.add_new_tracker)
 
         self.load_tracker()
+        self.timer = QTimer()
+        self.timer.setInterval(1000)  
+        self.timer.timeout.connect(self.update_current_task_time)
+        self.current_task_widget = None 
         
 
     
@@ -238,21 +242,21 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         '''
         conn = sqlite3.connect('tracker.db')
         cursor = conn.cursor()
-        cursor.execute("SELECT id, content FROM tracker")
+        cursor.execute("SELECT id, content, time FROM tracker")
         rows = cursor.fetchall()
         conn.close()
 
         self.Focus_list.clear()
-        for task_id, task_content in rows:
-            self.add_task_to_list(task_id, task_content)
+        for task_id, task_content, total_time in rows:
+            self.add_task_to_list(task_id, task_content, total_time)
     
-    def add_task_to_list(self, task_id, task_content):
+    def add_task_to_list(self, task_id, task_content, total_time):
         '''
             This method add customized item to list
         '''
         print('adding_1')
         item = QListWidgetItem(self.Focus_list)
-        task_widget = TaskItemWidget(task_id, task_content, self.delete_task)
+        task_widget = TaskItemWidget(task_id, task_content, total_time, self.switch_timer, self.delete_task)        
         item.setSizeHint(task_widget.sizeHint())
         item.setSizeHint(task_widget.sizeHint().expandedTo(QtCore.QSize(0, 30)))
         self.Focus_list.addItem(item)
@@ -271,6 +275,45 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             if task_widget.task_id == task_id:
                 self.Focus_list.takeItem(i)
                 break
+    
+    def switch_timer(self, task_id):
+        '''
+            switch timer: stop or go
+        '''
+        print('timing')
+        for i in range(self.Focus_list.count()):
+            item = self.Focus_list.item(i)
+            task_widget = self.Focus_list.itemWidget(item)
+            if task_widget.task_id == task_id:
+                if self.current_task_widget == task_widget:
+                    #stop timing
+                    self.timer.stop()
+                    self.current_task_widget = None
+                else:
+                    # switch to new task
+                    if self.current_task_widget:
+                        self.timer.stop()
+                    self.current_task_widget = task_widget
+                    self.timer.start()
+                return
+    
+    def update_current_task_time(self):
+        '''
+            update time to database
+        '''
+        if self.current_task_widget:
+            self.current_task_widget.total_time += 1  #increase every 1s
+            self.current_task_widget.update_time()
+
+            # add to database
+            conn = sqlite3.connect('tracker.db')
+            cursor = conn.cursor()
+            cursor.execute(
+                "UPDATE tracker SET time = ? WHERE id = ?",
+                (self.current_task_widget.total_time, self.current_task_widget.task_id)
+            )
+            conn.commit()
+            conn.close()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
