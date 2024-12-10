@@ -26,9 +26,29 @@ class Ui_MainWindow(object):
         font.setFamily("Agency FB")
         font.setPointSize(10)
         self.page_tabs.setFont(font)
-        self.page_tabs.setStyleSheet("QLabel{\n"
-"background-color:rgb(169, 240, 255)\n"
-"}")
+        self.page_tabs.setElideMode(QtCore.Qt.ElideNone)
+        self.page_tabs.setStyleSheet("""
+                QTabWidget::pane {
+                        border: 1px solid lightgray; 
+                }
+                QTabBar::tab {
+                        color: black;
+                        font-size: 14px;
+                        padding: 10px 10px;
+                        min-width: 80px; 
+                        border: 1px solid lightgray;
+                        border-top-left-radius: 10px;
+                        border-top-right-radius: 10px; 
+                         
+                }
+                QTabBar::tab:selected { 
+                        font-weight: bold;
+                }
+                QTabBar::tab:hover {
+                        background: #D3D3D3; 
+                }
+                """)
+
         self.page_tabs.setObjectName("page_tabs")
         self.page1_tab = QtWidgets.QWidget()
         self.page1_tab.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
