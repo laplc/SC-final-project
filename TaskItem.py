@@ -28,7 +28,7 @@ class TaskItemBase(QWidget):
         #create delete button
         self.delete_button = QPushButton("Delete")
         self.delete_button.setVisible(False)
-        self.delete_button.clickgited.connect(self.delete_task)
+        self.delete_button.clicked.connect(self.delete_task)
         self.layout.addWidget(self.delete_button)
 
         # track mouse location to display delete button
