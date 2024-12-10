@@ -315,6 +315,7 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
                     self.current_task_label.setText(f"Focusing on: {task_widget.task_button.text().split(' - ')[0]}")
                     self.timer.start()
                     self.update_progress_bar() 
+                self.check_and_pop_dashboard() 
                 return
     
     def update_current_task_time(self):
@@ -402,7 +403,16 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             self.current_task_label.setText("No task selected")
 
             QMessageBox.information(self, "Reset Complete", "All tasks have been reset to zero.")
-        
+            self.check_and_pop_dashboard() 
+
+    def check_and_pop_dashboard(self):
+        """
+        Check if there is no current focus task and pop the dashboard window.
+        """
+        if not self.current_task_widget:  # 检查是否有 Focus 任务
+            self.subwindow = func_dashboardwindow()
+            self.subwindow.show()
+
     
 
 
