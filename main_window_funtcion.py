@@ -339,15 +339,17 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             conn.close()
 
     def update_progress_bar(self):
-        total_time = sum(task.total_time for task in self.get_all_tasks())
+        tasks = self.get_all_tasks()
+        total_time = sum(task.total_time for task in tasks)
         if total_time == 0:
             self.progressBar.set_tasks([], [])
             return
 
         task_ratios = [task.total_time / total_time for task in self.get_all_tasks()]
         task_colors = ["#FF9999", "#99CCFF", "#FFCC99", "#66CC66"][:len(task_ratios)]
-        self.progressBar.set_tasks(task_ratios, task_colors)
-
+        task_names = [task.task_button.text().split(" - ")[0] for task in tasks]
+        self.progressBar.set_tasks(task_ratios, task_colors, task_names)
+        
     def get_all_tasks(self):
         tasks = []
         for i in range(self.Focus_list.count()):
