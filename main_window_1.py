@@ -42,6 +42,7 @@ class Ui_MainWindow(object):
                          
                 }
                 QTabBar::tab:selected { 
+                        background: #FFFF99;
                         font-weight: bold;
                 }
                 QTabBar::tab:hover {
