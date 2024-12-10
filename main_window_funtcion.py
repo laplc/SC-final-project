@@ -23,7 +23,7 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             "Arrangement": QColor(255, 243, 108), 
             "Event": QColor(255, 255, 255)         
         }
-        self.comboBox.addItems(["Deadline", "Todo", "Event", "Arrangement"])
+        self.comboBox.addItems(["Deadline", "Todo", "Event"])
 
         #connect signals to functions-page1
         self.archive_button.clicked.connect(self.pop_archive_window)

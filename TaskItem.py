@@ -17,7 +17,6 @@ class TaskItemBase(QWidget):
         self.colors = {
             "Deadline": QColor(255, 200, 200), 
             "Todo": QColor(200, 255, 200),     
-            "Arrangement": QColor(255, 243, 108), 
             "Event": QColor(255, 255, 255)         
         }
         self.list_widget = list_widget
