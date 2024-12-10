@@ -8,6 +8,8 @@ from archive_window_function import archive_window_function
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt, QDate
 from TaskItem import TaskItemWithCheckbox, TaskItemWithoutCheckbox
+from TaskItemWidget import TaskItemWidget
+from PyQt5 import QtCore
 
 class Func_MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -36,6 +38,8 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
 
         #connect signals to functions -page3
         self.Add_new_button.clicked.connect(self.add_new_tracker)
+
+        self.load_tracker()
         
 
     
@@ -227,6 +231,46 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             conn.close()
 
             self.textEdit_2.clear()
+
+    def load_tracker(self):
+        '''
+            This method load task from database to list by calling add_task_to_list
+        '''
+        conn = sqlite3.connect('tracker.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, content FROM tracker")
+        rows = cursor.fetchall()
+        conn.close()
+
+        self.Focus_list.clear()
+        for task_id, task_content in rows:
+            self.add_task_to_list(task_id, task_content)
+    
+    def add_task_to_list(self, task_id, task_content):
+        '''
+            This method add customized item to list
+        '''
+        print('adding_1')
+        item = QListWidgetItem(self.Focus_list)
+        task_widget = TaskItemWidget(task_id, task_content, self.delete_task)
+        item.setSizeHint(task_widget.sizeHint())
+        item.setSizeHint(task_widget.sizeHint().expandedTo(QtCore.QSize(0, 30)))
+        self.Focus_list.addItem(item)
+        self.Focus_list.setItemWidget(item, task_widget)
+    
+    def delete_task(self, task_id):
+        conn = sqlite3.connect('tracker.db')
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM tracker WHERE id = ?", (task_id,))
+        conn.commit()
+        conn.close()
+
+        for i in range(self.Focus_list.count()):
+            item = self.Focus_list.item(i)
+            task_widget = self.Focus_list.itemWidget(item)
+            if task_widget.task_id == task_id:
+                self.Focus_list.takeItem(i)
+                break
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
