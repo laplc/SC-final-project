@@ -28,7 +28,7 @@ class TaskItemWidget(QWidget):
         """)
 
         self.layout = QHBoxLayout(self)
-        self.layout.setContentsMargins(10, 5, 10, 5)  # 设置内部边距
+        self.layout.setContentsMargins(10, 5, 10, 5)  
         self.total_time = total_time
 
         # self.layout = QHBoxLayout(self)
@@ -41,6 +41,17 @@ class TaskItemWidget(QWidget):
         self.layout.addWidget(self.task_button)
 
         self.delete_button = QPushButton("delete", self)
+        self.delete_button.setStyleSheet("""
+            QPushButton {
+                background-color: transparent; 
+                border: none;                
+                color: black;               
+            }
+            QPushButton:hover {
+                background-color: #FFCCCC;    
+                color: red;                   
+            }
+        """)
         self.delete_button.setVisible(False)  
         self.delete_button.clicked.connect(self.on_delete_clicked)
         self.delete_button.setFixedSize(50, 25)
