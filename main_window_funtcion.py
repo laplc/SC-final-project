@@ -9,7 +9,7 @@ from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt, QDate, QTimer
 from TaskItem import TaskItemWithCheckbox, TaskItemWithoutCheckbox
 from TaskItemWidget import TaskItemWidget
-from PyQt5 import QtCore
+from PyQt5 import QtCore, QtWidgets
 
 class Func_MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -35,7 +35,7 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         self.calendarWidget.selectionChanged.connect(self.refresh_list)
 
         self.refresh_calendar()
-
+        #---------------------------page3---------------
         #connect signals to functions -page3
         self.Add_new_button.clicked.connect(self.add_new_tracker)
 
@@ -44,8 +44,8 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         self.timer.setInterval(1000)  
         self.timer.timeout.connect(self.update_current_task_time)
         self.current_task_widget = None 
-        
 
+        
     
     def pop_archive_window(self):
         '''when "archive"is clicked, pop archive window'''
@@ -290,11 +290,13 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
                     #stop timing
                     self.timer.stop()
                     self.current_task_widget = None
+                    self.current_task_label.setText("No task selected")
                 else:
                     # switch to new task
                     if self.current_task_widget:
                         self.timer.stop()
                     self.current_task_widget = task_widget
+                    self.current_task_label.setText(f"Focusing on: {task_widget.task_button.text().split(' - ')[0]}")
                     self.timer.start()
                 return
     

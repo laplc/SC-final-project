@@ -101,6 +101,19 @@ class Ui_MainWindow(object):
         self.page_tabs.addTab(self.page3_tab, "")
         self.gridLayout.addWidget(self.page_tabs, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
+        self.current_task_label = QtWidgets.QLabel(self.page3_tab)
+        self.current_task_label.setGeometry(QtCore.QRect(200, 100, 351, 20))  
+        self.current_task_label.setAlignment(QtCore.Qt.AlignCenter) 
+        self.current_task_label.setText("No task selected") 
+        self.current_task_label.setObjectName("current_task_label")
+        self.current_task_label.setStyleSheet("""
+                QLabel {
+                        font-size: 12px;         
+                        color: #555555;         
+                        background-color: none; 
+                        font-weight: bold;      
+                }
+                """)
 
         self.retranslateUi(MainWindow)
         self.page_tabs.setCurrentIndex(1)
