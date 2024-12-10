@@ -10,11 +10,12 @@ class MultiTaskBar(QWidget):
         self.task_colors_with_names = []
 
     def set_tasks(self, task_ratios, task_colors, task_names):
-        
-        if not task_ratios or not task_colors:
-            print("Error: No tasks to display.")
+        if not task_ratios or not task_colors or not task_names:
+            self.task_ratios = []
+            self.task_colors_with_names = []
+            self.update()  
             return
-
+            
         self.task_ratios = task_ratios
         self.task_colors_with_names = list(zip(task_colors, task_names))
         self.update() 

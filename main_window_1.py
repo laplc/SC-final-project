@@ -122,6 +122,12 @@ class Ui_MainWindow(object):
         self.progressBar = MultiTaskBar(self.page3_tab)
         self.progressBar.setGeometry(QtCore.QRect(130, 50, 511, 20))  
         self.progressBar.setObjectName("progressBar")
+        self.reset_button = QtWidgets.QPushButton(self.page3_tab)
+        self.reset_button.setGeometry(QtCore.QRect(300, 520, 120, 30))
+        self.reset_button.setObjectName("reset_button")
+        self.reset_button.setText("Reset Tasks")
+
+        
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

@@ -1,6 +1,6 @@
 import sys, sqlite3
 from datetime import datetime
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from main_window_1 import Ui_MainWindow
 from PyQt5.QtWidgets import QListWidgetItem
 from dashboard_window_function import func_dashboardwindow
@@ -10,6 +10,7 @@ from PyQt5.QtCore import Qt, QDate, QTimer
 from TaskItem import TaskItemWithCheckbox, TaskItemWithoutCheckbox
 from TaskItemWidget import TaskItemWidget
 from PyQt5 import QtCore, QtWidgets
+from reset_all_tasks import reset_all_tasks
 
 class Func_MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -38,6 +39,7 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         #---------------------------page3---------------
         #connect signals to functions -page3
         self.Add_new_button.clicked.connect(self.add_new_tracker)
+        self.reset_button.clicked.connect(self.reset_all_tasks)
 
         self.load_tracker()
         self.timer = QTimer()
@@ -342,14 +344,14 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         tasks = self.get_all_tasks()
         total_time = sum(task.total_time for task in tasks)
         if total_time == 0:
-            self.progressBar.set_tasks([], [])
+            self.progressBar.set_tasks([], [], [])
             return
 
         task_ratios = [task.total_time / total_time for task in self.get_all_tasks()]
         task_colors = ["#FF9999", "#99CCFF", "#FFCC99", "#66CC66"][:len(task_ratios)]
         task_names = [task.task_button.text().split(" - ")[0] for task in tasks]
         self.progressBar.set_tasks(task_ratios, task_colors, task_names)
-        
+
     def get_all_tasks(self):
         tasks = []
         for i in range(self.Focus_list.count()):
@@ -358,7 +360,36 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             tasks.append(task_widget)
         return tasks
     
- 
+    def reset_all_tasks(self):
+        """
+        Reset all tasks' time to zero after user confirmation.
+        """
+        confirm_dialog = QMessageBox(self)
+        confirm_dialog.setWindowTitle("Reset Confirmation")
+        confirm_dialog.setText("Are you sure you want to reset all tasks?")
+        confirm_dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        confirm_dialog.setIcon(QMessageBox.Warning)
+        response = confirm_dialog.exec_()
+
+        if response == QMessageBox.Yes:
+            conn = sqlite3.connect('tracker.db')
+            cursor = conn.cursor()
+
+            cursor.execute("UPDATE tracker SET time = 0")
+            conn.commit()
+            conn.close()
+
+            self.load_tracker()
+
+            self.progressBar.set_tasks([], [], [])
+
+            self.timer.stop()
+            self.current_task_widget = None
+            self.current_task_label.setText("No task selected")
+
+            QMessageBox.information(self, "Reset Complete", "All tasks have been reset to zero.")
+        
+    
 
 
 if __name__ == "__main__":
