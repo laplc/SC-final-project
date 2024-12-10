@@ -85,6 +85,8 @@ class Ui_MainWindow(object):
         self.comboBox.setGeometry(QtCore.QRect(690, 400, 51, 41))
         self.comboBox.setObjectName("comboBox")
         self.page_tabs.addTab(self.page2_tab, "")
+
+        #-------------page3--------------------
         self.page3_tab = QtWidgets.QWidget()
         self.page3_tab.setObjectName("page3_tab")
         self.Focus_list = QtWidgets.QListView(self.page3_tab)
@@ -96,9 +98,6 @@ class Ui_MainWindow(object):
         self.Add_new_button = QtWidgets.QPushButton(self.page3_tab)
         self.Add_new_button.setGeometry(QtCore.QRect(520, 465, 75, 23))
         self.Add_new_button.setObjectName("Add_new_button")
-        self.Delete = QtWidgets.QPushButton(self.page3_tab)
-        self.Delete.setGeometry(QtCore.QRect(600, 465, 75, 23))
-        self.Delete.setObjectName("Delete")
         self.page_tabs.addTab(self.page3_tab, "")
         self.gridLayout.addWidget(self.page_tabs, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -121,7 +120,6 @@ class Ui_MainWindow(object):
         self.page_tabs.setTabText(self.page_tabs.indexOf(self.page1_tab), _translate("MainWindow", "Brain Dump"))
         self.page_tabs.setTabText(self.page_tabs.indexOf(self.page2_tab), _translate("MainWindow", "Calender"))
         self.Add_new_button.setText(_translate("MainWindow", "Add"))
-        self.Delete.setText(_translate("MainWindow", "Delete"))
         self.page_tabs.setTabText(self.page_tabs.indexOf(self.page3_tab), _translate("MainWindow", "Focusing"))
 
 if __name__ == "__main__":
