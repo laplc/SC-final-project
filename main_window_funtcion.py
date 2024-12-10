@@ -328,10 +328,8 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             return
 
         task_ratios = [task.total_time / total_time for task in self.get_all_tasks()]
-        task_colors = ["#FF9999", "#99CCFF", "#FFCC99", "#66CC66"] 
-
-        # self.progressBar.set_tasks(task_ratios, task_colors)
-        self.progressBar.set_tasks([0.6, 0.4], ["#FFCC99", "#99CCFF"])
+        task_colors = ["#FF9999", "#99CCFF", "#FFCC99", "#66CC66"][:len(task_ratios)]
+        self.progressBar.set_tasks(task_ratios, task_colors)
 
     def get_all_tasks(self):
         tasks = []

@@ -9,6 +9,7 @@ from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt, QDate
 from main_window_funtcion import Func_MainWindow
 
+
 class main_window_function_p3(Func_MainWindow):
     def __init__(self, parent = None):
         super().__init__()
