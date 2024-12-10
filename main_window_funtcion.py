@@ -265,6 +265,12 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         self.Focus_list.setItemWidget(item, task_widget)
     
     def delete_task(self, task_id):
+        if self.current_task_widget and self.current_task_widget.task_id == task_id:
+            #if the undergoing task is deleted, stop the timer
+            self.timer.stop()
+            self.current_task_widget = None
+            self.current_task_label.setText("No task selected")
+
         conn = sqlite3.connect('tracker.db')
         cursor = conn.cursor()
         cursor.execute("DELETE FROM tracker WHERE id = ?", (task_id,))
@@ -277,6 +283,8 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             if task_widget.task_id == task_id:
                 self.Focus_list.takeItem(i)
                 break
+
+        self.update_progress_bar() #update the progress bar
     
     def switch_timer(self, task_id):
         '''
