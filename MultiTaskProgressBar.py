@@ -16,7 +16,6 @@ class MultiTaskBar(QWidget):
 
         self.task_ratios = task_ratios
         self.task_colors = task_colors
-        print(f"Set Tasks - Ratios: {self.task_ratios}, Colors: {self.task_colors}")
         self.update() 
 
     def paintEvent(self, event):
@@ -35,7 +34,7 @@ class MultiTaskBar(QWidget):
             segment_width = total_width * ratio
 
             #for testing
-            print(f"Drawing Segment: Start={x_start}, Width={segment_width}, Color={color}")
+            # print(f"Drawing Segment: Start={x_start}, Width={segment_width}, Color={color}")
 
             if segment_width > 0:
                 painter.save()
@@ -45,11 +44,4 @@ class MultiTaskBar(QWidget):
 
                 x_start += segment_width
 
-        # # 绘制黑色边框，确保边框不会覆盖段颜色
-        # painter.setPen(Qt.black)
-        # painter.drawRect(rect)
-
-        # # 绘制文本
-        # painter.setPen(Qt.black)
-        # painter.drawText(rect, Qt.AlignCenter, self.text())
 

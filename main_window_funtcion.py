@@ -208,34 +208,41 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
     #-----------------methods for page3-------------------
     def add_new_tracker(self):
         text = self.textEdit_2.toPlainText()
-
         if not text:
             return
 
-        if text:
-            
-            conn = sqlite3.connect('tracker.db')
-            cursor = conn.cursor()
+        # add new task to database
+        conn = sqlite3.connect('tracker.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS tracker (
+            id INTEGER PRIMARY KEY,
+            content TEXT NOT NULL,
+            time INTEGER DEFAULT 0
+        )
+        ''')
+        cursor.execute('''
+        INSERT INTO tracker (content, time)
+        VALUES(?,?)
+        ''', (text, 0))
+        conn.commit()
+        conn.close()
 
-            cursor.execute('''
-            CREATE TABLE IF NOT EXISTS tracker (
-                id INTEGER PRIMARY KEY,
-                content TEXT NOT NULL,
-                time INTEGER DEFAULT 0
-            )
-            ''')
+        self.textEdit_2.clear()
 
-            cursor.execute('''
-            INSERT INTO tracker (content, time)
-            VALUES(?,?)
-            ''',
-            (text, 0))
+        # load single task
+        self.load_single_task(cursor.lastrowid)  
 
-            conn.commit()
-            conn.close()
+    def load_single_task(self, task_id):
+        conn = sqlite3.connect('tracker.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, content, time FROM tracker WHERE id = ?", (task_id,))
+        row = cursor.fetchone()
+        conn.close()
 
-            self.textEdit_2.clear()
-            self.load_tracker()
+        if row:
+            task_id, task_content, total_time = row
+            self.add_task_to_list(task_id, task_content, total_time)
 
 
     def load_tracker(self):
@@ -256,7 +263,6 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         '''
             This method add customized item to list
         '''
-        print('adding_1')
         item = QListWidgetItem(self.Focus_list)
         task_widget = TaskItemWidget(task_id, task_content, total_time, self.switch_timer, self.delete_task)        
         item.setSizeHint(task_widget.sizeHint())
@@ -313,6 +319,9 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         '''
             update time to database
         '''
+        if not self.current_task_widget:
+            return 
+
         if self.current_task_widget:
             self.current_task_widget.total_time += 1  #increase every 1s
             self.current_task_widget.update_time()
