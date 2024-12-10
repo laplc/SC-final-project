@@ -12,6 +12,7 @@ from TaskItem import TaskItemWithCheckbox, TaskItemWithoutCheckbox
 class Func_MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
+
         self.setupUi(self)  
         self.colors = {
             "Deadline": QColor(255, 200, 200), 
@@ -32,6 +33,10 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         self.calendarWidget.selectionChanged.connect(self.refresh_list)
 
         self.refresh_calendar()
+
+        #connect signals to functions -page3
+        self.Add_new_button.clicked.connect(self.add_new_tracker)
+        
 
     
     def pop_archive_window(self):
@@ -192,6 +197,36 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         self.calendarWidget.set_task_dates(task_dates)
         self.calendarWidget.update()
 
+    #-----------------methods for page3-------------------
+    def add_new_tracker(self):
+        text = self.textEdit_2.toPlainText()
+
+        if not text:
+            return
+
+        if text:
+            
+            conn = sqlite3.connect('tracker.db')
+            cursor = conn.cursor()
+
+            cursor.execute('''
+            CREATE TABLE IF NOT EXISTS tracker (
+                id INTEGER PRIMARY KEY,
+                content TEXT NOT NULL,
+                time INTEGER DEFAULT 0
+            )
+            ''')
+
+            cursor.execute('''
+            INSERT INTO tracker (content, time)
+            VALUES(?,?)
+            ''',
+            (text, 0))
+
+            conn.commit()
+            conn.close()
+
+            self.textEdit_2.clear()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
