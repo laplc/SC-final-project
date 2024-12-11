@@ -25,8 +25,7 @@ class CustomCalendar(QCalendarWidget):
             colors = {
                 "Deadline": QColor(255, 0, 0), 
                 "Todo": QColor(0, 255, 0),    
-                "Arrangement": QColor(0, 0, 255),  
-                "Event": QColor(0, 0, 255),   
+                "Event": QColor(255,255,0),   
             }
 
             radius = 4  

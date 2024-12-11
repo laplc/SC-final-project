@@ -158,7 +158,11 @@ class Ui_MainWindow(object):
         )
         self.add_text.setGeometry(QtCore.QRect(440, 313, 151, 28))
         self.add_text.setObjectName("add_text")
+        self.add_text.setFont(font)
+
         self.page_tabs.addTab(self.page1_tab, "")
+
+        #--------page2---------------------------
         self.page2_tab = QtWidgets.QWidget()
         self.page2_tab.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         self.page2_tab.setObjectName("page2_tab")
@@ -171,11 +175,24 @@ class Ui_MainWindow(object):
         font.setPointSize(10)
         self.calendarWidget.setFont(font)
         self.calendarWidget.setObjectName("calendarWidget")
+        self.calendarWidget.setStyleSheet("""
+        QCalendarWidget {
+                border-radius: 15px;
+                background-color: #F0F8FF;
+        }
+        """)
 
-        #-----------------------page2-------------------
 
         self.task_list = QtWidgets.QListWidget(self.page2_tab)
         self.task_list.setGeometry(QtCore.QRect(470, 110, 271, 271))
+        self.task_list.setStyleSheet("""
+        QListWidget {
+                border-radius: 15px;
+                background-color:  #D0EFFF;
+                border: 1px solid #CCCCCC;
+        }
+        """)
+
         self.task_list.setObjectName("task_list")
         self.add_task = QtWidgets.QTextEdit(self.page2_tab)
         self.add_task.setGeometry(QtCore.QRect(480, 400, 201, 41))

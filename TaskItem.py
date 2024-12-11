@@ -17,7 +17,7 @@ class TaskItemBase(QWidget):
         self.colors = {
             "Deadline": QColor(255, 200, 200), 
             "Todo": QColor(200, 255, 200),     
-            "Event": QColor(255, 255, 255)         
+            "Event": QColor(255, 243, 108)         
         }
         self.list_widget = list_widget
         self.layout = QHBoxLayout()
@@ -85,6 +85,8 @@ class TaskItemWithoutCheckbox(TaskItemBase):
         self.label.setStyleSheet("color: black;")  
         self.label.setFont(font)
         self.layout.insertWidget(0, self.label)
+        self.label.setFixedHeight(20)
+
 
 
 class TaskItemWithCheckbox(TaskItemBase):
@@ -97,4 +99,6 @@ class TaskItemWithCheckbox(TaskItemBase):
         )
         self.checkbox.setFont(font)
         self.layout.insertWidget(0, self.checkbox)
+        self.setFixedHeight(20)  
+
 
