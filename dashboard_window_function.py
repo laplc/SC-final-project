@@ -1,9 +1,6 @@
 import sys
 import sqlite3
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QListWidgetItem
-from main_window import Ui_MainWindow
-from PyQt5 import QtCore, QtGui, QtWidgets
-from archive_window import archive_MainWindow
 from dashboard_window import Ui_Dashboard_window
 from Warning_delete_func import Warning_delete_func
 from Warning_archive_func import Warning_archive_func

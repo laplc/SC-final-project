@@ -1,11 +1,14 @@
 import sqlite3
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QListWidgetItem
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QListWidgetItem 
 from PyQt5 import QtWidgets
 from archive_window import archive_MainWindow
 from PyQt5.QtCore import Qt
 
 
 class archive_window_function(archive_MainWindow, QMainWindow):
+    '''
+    Class to handle the functionality of the archive window
+    '''
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -15,7 +18,11 @@ class archive_window_function(archive_MainWindow, QMainWindow):
         self.archive_delete.clicked.connect(self.delete)
         self.archive_export.clicked.connect(self.export_to_txt)
 
+
     def list_content(self):
+        """
+        Fetch and display all archived items from the database in the list view.
+        """
         conn = sqlite3.connect('archive.db')
         cursor = conn.cursor()
 
@@ -26,9 +33,9 @@ class archive_window_function(archive_MainWindow, QMainWindow):
             item = QListWidgetItem(row[1])  # row[1] being content
             item.setData(Qt.UserRole, row[0])  # row[0] being id
             self.listView.addItem(item)
-
+        
         conn.close()
-
+    
     def set_ui(self):
         '''
             set UI
@@ -46,6 +53,9 @@ class archive_window_function(archive_MainWindow, QMainWindow):
             """)
 
     def delete(self):
+        """
+        Delete the selected item from the database and remove it from the list view.
+        """
         selected_item = self.listView.currentItem()
         if selected_item:
             conn = sqlite3.connect('archive.db')
@@ -56,29 +66,29 @@ class archive_window_function(archive_MainWindow, QMainWindow):
             conn.close()
 
             self.listView.takeItem(self.listView.row(selected_item))
-
+    
     def export_to_txt(self):
+        
         # Open database connection
         conn = sqlite3.connect('archive.db')
         cursor = conn.cursor()
-
+            
         # Fetch all content and date from the archive
         cursor.execute("SELECT content, time FROM archive")
         rows = cursor.fetchall()
         conn.close()
 
         if not rows:
-            QMessageBox.warning(
-                self, "No Data", "There are no records to export.")
+            QMessageBox.warning(self, "No Data", "There are no records to export.")
             return
 
         # Open file dialog for user to select save location
         options = QtWidgets.QFileDialog.Options()
         file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self,
-            "Save TXT File",
-            "",
-            "Text Files (*.txt);;All Files (*)",
+            self, 
+            "Save TXT File", 
+            "", 
+            "Text Files (*.txt);;All Files (*)", 
             options=options
         )
 
@@ -99,9 +109,9 @@ class archive_window_function(archive_MainWindow, QMainWindow):
                     file.write(f"Date: {date}\n")
                     file.write("\n")
 
-            QMessageBox.information(
-                self, "Export Successful", f"TXT exported successfully to {file_path}.")
+            QMessageBox.information(self, "Export Successful", f"TXT exported successfully to {file_path}.")
 
         except Exception as e:
-            QMessageBox.critical(
-                self, "Error", f"An error occurred while saving the file: {str(e)}")
+            QMessageBox.critical(self, "Error", f"An error occurred while saving the file: {str(e)}")
+
+    
