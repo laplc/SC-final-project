@@ -34,6 +34,13 @@ To use the Task Management Application, follow these steps:
 2. **Navigate to the project directory**:
    ```bash
    cd /path/to/your/project
+3. **Install dependencies**:
+    Ensure you have Python installed (version 3.7 or above).
+4. **Install required libraries**:
+   ```bash
+    pip install -r requirements.txt
+5. **Run the application**:
+    Start the application by running the main_window_function.py file
 
 
 
