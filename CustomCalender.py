@@ -2,10 +2,11 @@ from PyQt5.QtWidgets import QCalendarWidget
 from PyQt5.QtGui import QPainter, QColor, QTextCharFormat
 from PyQt5.QtCore import QDate, Qt
 
+
 class CustomCalendar(QCalendarWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.task_dates = {}  
+        self.task_dates = {}
 
     def set_task_dates(self, task_dates):
         self.task_dates = task_dates
@@ -16,28 +17,31 @@ class CustomCalendar(QCalendarWidget):
 
     def paintCell(self, painter, rect, date):
         """
+        Customize the painting of individual calendar cells to display markers for tasks.
         """
-        super().paintCell(painter, rect, date)  #default painting
+        super().paintCell(painter, rect, date)  # default painting
 
         # check for task
         if date in self.task_dates:
             categories = self.task_dates[date]
             colors = {
-                "Deadline": QColor(255, 0, 0), 
-                "Todo": QColor(0, 255, 0),    
-                "Event": QColor(255,255,0),   
+                "Deadline": QColor(255, 0, 0),
+                "Todo": QColor(0, 255, 0),
+                "Event": QColor(255, 255, 0),
             }
 
-            radius = 4  
-            padding = 2 
+            radius = 4
+            padding = 2
             center_x = rect.center().x()
             center_y = rect.bottom() - radius - padding
-            start_x = center_x - ((len(categories) - 1) * (radius + padding)) / 2
+            start_x = center_x - ((len(categories) - 1)
+                                  * (radius + padding)) / 2
 
+            # paint markers in different color for different categories
             for i, category in enumerate(categories):
                 if category in colors:
                     painter.setBrush(colors[category])
                     painter.setPen(Qt.NoPen)
                     x = start_x + i * (2 * radius + padding)
-                    painter.drawEllipse(x - radius, center_y - radius, 2 * radius, 2 * radius)
-
+                    painter.drawEllipse(
+                        x - radius, center_y - radius, 2 * radius, 2 * radius)

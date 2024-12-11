@@ -1,4 +1,5 @@
-import sys, sqlite3
+import sys
+import sqlite3
 from datetime import datetime
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from main_window_1 import Ui_MainWindow
@@ -9,10 +10,12 @@ from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt, QDate, QTimer
 from TaskItem import TaskItemWithCheckbox, TaskItemWithoutCheckbox
 from TaskItemWidget import TaskItemWidget
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore
 import os
 import warnings
+import colorsys
 
+# ignore warning
 os.environ["PYTHONWARNINGS"] = "ignore"
 warnings.filterwarnings("ignore", category=UserWarning, module="PIL")
 
@@ -21,39 +24,38 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setupUi(self)  
+        self.setupUi(self)
         self.colors = {
-            "Deadline": QColor(255, 200, 200), 
-            "Todo": QColor(200, 255, 200),     
-            "Arrangement": QColor(255, 243, 108), 
-            "Event": QColor(255, 255, 255)         
+            "Deadline": QColor(255, 200, 200),
+            "Todo": QColor(200, 255, 200),
+            "Arrangement": QColor(255, 243, 108),
+            "Event": QColor(255, 255, 255)
         }
         self.comboBox.addItems(["Deadline", "Todo", "Event"])
 
-        #connect signals to functions-page1
+        # connect signals to functions-page1
         self.archive_button.clicked.connect(self.pop_archive_window)
         self.dashboard_button.clicked.connect(self.pop_dashboard_window)
         self.add_text.clicked.connect(self.getText)
 
-        #connect signals to functions -page2
+        # connect signals to functions -page2
         self.comboBox.activated.connect(self.new_task)
         self.comboBox.activated.connect(self.refresh_calendar)
         self.calendarWidget.selectionChanged.connect(self.refresh_list)
 
-        self.refresh_calendar()
-        #---------------------------page3---------------
-        #connect signals to functions -page3
+        self.refresh_calendar()  # refresh calendar
+
+        # ---------------------------page3---------------
+        # connect signals to functions -page3
         self.Add_new_button.clicked.connect(self.add_new_tracker)
         self.reset_button.clicked.connect(self.reset_all_tasks)
-
+        # other functions on page3
         self.load_tracker()
         self.timer = QTimer()
-        self.timer.setInterval(1000)  
+        self.timer.setInterval(1000)
         self.timer.timeout.connect(self.update_current_task_time)
-        self.current_task_widget = None 
+        self.current_task_widget = None
 
-        
-    
     def pop_archive_window(self):
         '''when "archive"is clicked, pop archive window'''
         self.subwindow = archive_window_function()
@@ -66,11 +68,11 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
 
     def getText(self):
         '''
-        on page 1       
+        on page 1
         when "save for later" button is clicked, save this into database:
             1-the content
             2-the time
-        '''        
+        '''
         text = self.textEdit.toPlainText()
 
         if text:
@@ -91,7 +93,7 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             INSERT INTO dashboard (content, time)
             VALUES(?,?)
             ''',
-            (text, current_time))
+                           (text, current_time))
 
             conn.commit()
             conn.close()
@@ -126,7 +128,7 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             INSERT INTO tasks (task, date, category, completed)
             VALUES(?,?,?,?)
             ''',
-            (task_text, date_selected, category, 'NO'))
+                           (task_text, date_selected, category, 'NO'))
 
             conn.commit()
             conn.close()
@@ -134,10 +136,11 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             self.add_task.clear()
             self.refresh_list()
 
-    
     def refresh_list(self):
-        self.task_list.clear() #clear task list
-        #refresh calendar
+        '''
+            refresh the list on page2
+        '''
+        self.task_list.clear()  # clear task list
 
         conn = sqlite3.connect('task.db')
         cursor = conn.cursor()
@@ -148,27 +151,28 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         tasks = cursor.fetchall()
         conn.close()
 
-        category_order = {'Deadline': 0, 'Arrangement': 1, 'Event': 2, 'Todo': 3}
+        category_order = {'Deadline': 0,
+                          'Arrangement': 1, 'Event': 2, 'Todo': 3}
         tasks.sort(key=lambda x: category_order.get(x[1], 4))
 
+        # Iterate through tasks
+        # and create appropriate widget objects based on their category
         for task, category, completed in tasks:
             if category in ['Todo', 'Deadline']:
                 widget = TaskItemWithCheckbox(
-                    task, category, completed, self.colors, self.task_list, 
-                    self.update_task_status, 
-                    on_task_deleted=self.refresh_calendar 
+                    task, category, completed, self.colors, self.task_list,
+                    self.update_task_status,
+                    on_task_deleted=self.refresh_calendar
                 )
             else:
                 widget = TaskItemWithoutCheckbox(
-                    task, category, self.colors, self.task_list, 
+                    task, category, self.colors, self.task_list,
                     on_task_deleted=self.refresh_calendar
                 )
-
             item = QListWidgetItem(self.task_list)
             item.setSizeHint(widget.sizeHint())
             self.task_list.addItem(item)
             self.task_list.setItemWidget(item, widget)
-
 
     def update_task_status(self, task, state):
         '''
@@ -179,13 +183,14 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
 
         completed = "YES" if state == Qt.Checked else "NO"
 
-        cursor.execute("UPDATE tasks SET completed = ? WHERE task = ?", (completed, task))
+        cursor.execute(
+            "UPDATE tasks SET completed = ? WHERE task = ?", (completed, task))
         conn.commit()
         conn.close()
 
     def get_task_dates(self):
         """
-        get info from database
+            get info from database
         """
         conn = sqlite3.connect('task.db')
         cursor = conn.cursor()
@@ -199,7 +204,7 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         for task_date, category in tasks:
             qdate = QDate.fromString(task_date, "yyyy-MM-dd")
             if not qdate.isValid():
-                continue  
+                continue
 
             if qdate not in date_task_map:
                 date_task_map[qdate] = set()
@@ -208,12 +213,19 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         return date_task_map
 
     def refresh_calendar(self):
+        '''
+            refresh the calendar on page2
+        '''
         task_dates = self.get_task_dates()
         self.calendarWidget.set_task_dates(task_dates)
         self.calendarWidget.update()
 
-    #-----------------methods for page3-------------------
+    # -----------------methods for page3-------------------
     def add_new_tracker(self):
+        '''
+            after user inputs in textEdit area,
+            this method stores the data into database
+        '''
         text = self.textEdit_2.toPlainText()
         if not text:
             return
@@ -238,12 +250,17 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         self.textEdit_2.clear()
 
         # load single task
-        self.load_single_task(cursor.lastrowid)  
+        self.load_single_task(cursor.lastrowid)
 
     def load_single_task(self, task_id):
+        '''
+            This method loads a single task from database with given task_id,
+            add this task to list for display
+        '''
         conn = sqlite3.connect('tracker.db')
         cursor = conn.cursor()
-        cursor.execute("SELECT id, content, time FROM tracker WHERE id = ?", (task_id,))
+        cursor.execute(
+            "SELECT id, content, time FROM tracker WHERE id = ?", (task_id,))
         row = cursor.fetchone()
         conn.close()
 
@@ -251,10 +268,10 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             task_id, task_content, total_time = row
             self.add_task_to_list(task_id, task_content, total_time)
 
-
     def load_tracker(self):
         '''
-            This method load task from database to list by calling add_task_to_list
+            This method loads task from database
+            to display in list area by calling add_task_to_list
         '''
         conn = sqlite3.connect('tracker.db')
         cursor = conn.cursor()
@@ -265,21 +282,24 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         self.Focus_list.clear()
         for task_id, task_content, total_time in rows:
             self.add_task_to_list(task_id, task_content, total_time)
-    
+
     def add_task_to_list(self, task_id, task_content, total_time):
         '''
-            This method add customized item to list
+            This method add customized item to list for display
         '''
         item = QListWidgetItem(self.Focus_list)
-        task_widget = TaskItemWidget(task_id, task_content, total_time, self.switch_timer, self.delete_task)        
+        task_widget = TaskItemWidget(
+            task_id, task_content, total_time,
+            self.switch_timer, self.delete_task)
         item.setSizeHint(task_widget.sizeHint())
-        item.setSizeHint(task_widget.sizeHint().expandedTo(QtCore.QSize(0, 30)))
+        item.setSizeHint(
+            task_widget.sizeHint().expandedTo(QtCore.QSize(0, 30)))
         self.Focus_list.addItem(item)
         self.Focus_list.setItemWidget(item, task_widget)
-    
+
     def delete_task(self, task_id):
         if self.current_task_widget and self.current_task_widget.task_id == task_id:
-            #if the undergoing task is deleted, stop the timer
+            # if the undergoing task is deleted, stop the timer
             self.timer.stop()
             self.current_task_widget = None
             self.current_task_label.setText("No task selected")
@@ -297,18 +317,27 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
                 self.Focus_list.takeItem(i)
                 break
 
-        self.update_progress_bar() #update the progress bar
-    
+        self.update_progress_bar()  # update the progress bar
+
     def switch_timer(self, task_id):
         '''
-            switch timer: stop or go
+        Switch the currently active task timer.
+
+        This method:
+        -stops the timer and resets the focus to "No task selected", 
+            if the task with given id is selected
+        -stops the currently active task's timer and start timer on new task,
+            if a different task is selected
+
+        Args:
+            task_id (int): The ID of the task to switch to.
         '''
         for i in range(self.Focus_list.count()):
             item = self.Focus_list.item(i)
             task_widget = self.Focus_list.itemWidget(item)
             if task_widget.task_id == task_id:
                 if self.current_task_widget == task_widget:
-                    #stop timing
+                    # stop timing
                     self.timer.stop()
                     self.current_task_widget = None
                     self.current_task_label.setText("No task selected")
@@ -317,48 +346,57 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
                     if self.current_task_widget:
                         self.timer.stop()
                     self.current_task_widget = task_widget
-                    self.current_task_label.setText(f"Focusing on: {task_widget.task_button.text().split(' - ')[0]}")
+                    self.current_task_label.setText(
+                        f"Focus: {task_widget.task_button.text().split('-')[0]}")
                     self.timer.start()
-                    self.update_progress_bar() 
-                self.check_and_pop_dashboard() 
+                    self.update_progress_bar()
+                # if the user is out of focus mode, dashboard will pop up
+                self.check_and_pop_dashboard()
                 return
-    
+
     def update_current_task_time(self):
         '''
-            update time to database
+            update task active time to database
         '''
         if not self.current_task_widget:
-            return 
+            return
 
         if self.current_task_widget:
-            self.current_task_widget.total_time += 1  #increase every 1s
+            self.current_task_widget.total_time += 1  # increase every 1s
             self.current_task_widget.update_time()
-            self.update_progress_bar()  
-
+            self.update_progress_bar()
 
             # add to database
             conn = sqlite3.connect('tracker.db')
             cursor = conn.cursor()
             cursor.execute(
                 "UPDATE tracker SET time = ? WHERE id = ?",
-                (self.current_task_widget.total_time, self.current_task_widget.task_id)
+                (self.current_task_widget.total_time,
+                 self.current_task_widget.task_id)
             )
             conn.commit()
             conn.close()
 
     def update_progress_bar(self):
+        '''
+            Update the progress bar to display the proportion of time spent on tasks.
+        '''
         def generate_colors(num_colors):
             """
-            Generate a list of distinct colors.
+            Generate a list of different colors.
+            Arg:
+                num_colors (int): The number of distinct colors to generate.
+            Returns:
+                list: A list of color codes in HEX format.
             """
-            import colorsys
             colors = []
             for i in range(num_colors):
-                hue = i / max(num_colors, 1)  # Evenly distribute hues
-                lightness = 0.7  # Adjust lightness for visibility
-                saturation = 0.8  # Adjust saturation for vivid colors
+                hue = i / max(num_colors, 1)
+                lightness = 0.7
+                saturation = 0.8
                 r, g, b = colorsys.hls_to_rgb(hue, lightness, saturation)
-                colors.append(f"#{int(r*255):02X}{int(g*255):02X}{int(b*255):02X}")
+                colors.append(
+                    f"#{int(r*255):02X}{int(g*255):02X}{int(b*255):02X}")
             return colors
 
         tasks = self.get_all_tasks()
@@ -367,22 +405,29 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             self.progressBar.set_tasks([], [], [])
             return
 
-        task_ratios = [task.total_time / total_time for task in self.get_all_tasks()]
+        task_ratios = [task.total_time /
+                       total_time for task in self.get_all_tasks()]
         task_colors = generate_colors(len(tasks))
-        task_names = [task.task_button.text().split(" - ")[0] for task in tasks]
+        task_names = [task.task_button.text().split(" - ")[0]
+                      for task in tasks]
         self.progressBar.set_tasks(task_ratios, task_colors, task_names)
 
     def get_all_tasks(self):
+        '''
+            get all the task from list(page3)
+            Returns:
+                tasks: A list of `TaskItemWidget` objects 
+        '''
         tasks = []
         for i in range(self.Focus_list.count()):
             item = self.Focus_list.item(i)
-            task_widget = self.Focus_list.itemWidget(item)  
+            task_widget = self.Focus_list.itemWidget(item)
             tasks.append(task_widget)
         return tasks
-    
+
     def reset_all_tasks(self):
         """
-        Reset all tasks' time to zero after user confirmation.
+            Reset all tasks' time to zero after user confirmation.
         """
         confirm_dialog = QMessageBox(self)
         confirm_dialog.setWindowTitle("Reset Confirmation")
@@ -407,18 +452,17 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
             self.current_task_widget = None
             self.current_task_label.setText("No task selected")
 
-            QMessageBox.information(self, "Reset Complete", "All tasks have been reset to zero.")
-            self.check_and_pop_dashboard() 
+            QMessageBox.information(
+                self, "Reset Complete", "All tasks have been reset to zero.")
+            self.check_and_pop_dashboard()
 
     def check_and_pop_dashboard(self):
         """
-        Check if there is no current focus task and pop the dashboard window.
+            Check if there is no current focus task and pop the dashboard window.
         """
-        if not self.current_task_widget:  # 检查是否有 Focus 任务
+        if not self.current_task_widget:
             self.subwindow = func_dashboardwindow()
             self.subwindow.show()
-
-    
 
 
 if __name__ == "__main__":

@@ -12,6 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from CustomCalender import CustomCalendar
 from MultiTaskProgressBar import MultiTaskBar
 
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -53,17 +54,18 @@ class Ui_MainWindow(object):
                 """)
         self.page_tabs.setObjectName("page_tabs")
         self.page1_tab = QtWidgets.QWidget()
-        self.page1_tab.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
+        self.page1_tab.setLocale(QtCore.QLocale(
+            QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         self.page1_tab.setObjectName("page1_tab")
         # self.page1_tab.setStyleSheet("""
         # QWidget {
-        #         background-color: #FFFAF0;  
+        #         background-color: #FFFAF0;
         # }
         # """)
         self.frame_2 = QtWidgets.QFrame(self.page1_tab)
         self.frame_2.setGeometry(QtCore.QRect(0, 480, 791, 131))
         self.frame_2.setStyleSheet("QFrame{\n"
-"background-color:rgb(244, 255, 166)}")
+                                   "background-color:rgb(244, 255, 166)}")
         self.frame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_2.setObjectName("frame_2")
@@ -111,7 +113,7 @@ class Ui_MainWindow(object):
                 background-color: #3399FF;
         }
         """
-        )
+                                            )
         self.textEdit = QtWidgets.QTextEdit(self.page1_tab)
         self.textEdit.setStyleSheet("""
         QTextEdit {
@@ -125,9 +127,9 @@ class Ui_MainWindow(object):
         }
         """)
         self.textEdit_title = QtWidgets.QLabel(self.page1_tab)
-        self.textEdit_title.setGeometry(QtCore.QRect(190, 100, 400, 30))  
-        self.textEdit_title.setText("What's on your mind?")  
-        self.textEdit_title.setAlignment(QtCore.Qt.AlignCenter) 
+        self.textEdit_title.setGeometry(QtCore.QRect(190, 100, 400, 30))
+        self.textEdit_title.setText("What's on your mind?")
+        self.textEdit_title.setAlignment(QtCore.Qt.AlignCenter)
         self.textEdit_title.setStyleSheet("""
         QLabel {
                 font-size: 20px; 
@@ -135,7 +137,6 @@ class Ui_MainWindow(object):
                 color: #333333; 
         }
         """)
-
 
         self.textEdit.setGeometry(QtCore.QRect(190, 170, 401, 141))
         self.textEdit.setObjectName("textEdit")
@@ -155,19 +156,20 @@ class Ui_MainWindow(object):
         QPushButton:pressed {
                 background-color: #CCCC33;
         }"""
-        )
+                                    )
         self.add_text.setGeometry(QtCore.QRect(440, 313, 151, 28))
         self.add_text.setObjectName("add_text")
         self.add_text.setFont(font)
 
         self.page_tabs.addTab(self.page1_tab, "")
 
-        #--------page2---------------------------
+        # --------page2---------------------------
         self.page2_tab = QtWidgets.QWidget()
-        self.page2_tab.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
+        self.page2_tab.setLocale(QtCore.QLocale(
+            QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         self.page2_tab.setObjectName("page2_tab")
 
-        #replace with a custom calender
+        # replace with a custom calender
         self.calendarWidget = CustomCalendar(self.page2_tab)
         self.calendarWidget.setGeometry(QtCore.QRect(30, 70, 411, 421))
         font = QtGui.QFont()
@@ -181,7 +183,6 @@ class Ui_MainWindow(object):
                 background-color: #F0F8FF;
         }
         """)
-
 
         self.task_list = QtWidgets.QListWidget(self.page2_tab)
         self.task_list.setGeometry(QtCore.QRect(470, 110, 271, 271))
@@ -202,7 +203,7 @@ class Ui_MainWindow(object):
         self.comboBox.setObjectName("comboBox")
         self.page_tabs.addTab(self.page2_tab, "")
 
-        #-------------page3--------------------
+        # -------------page3--------------------
         self.page3_tab = QtWidgets.QWidget()
         self.page3_tab.setObjectName("page3_tab")
         self.Focus_list = QtWidgets.QListWidget(self.page3_tab)
@@ -218,9 +219,9 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.page_tabs, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.current_task_label = QtWidgets.QLabel(self.page3_tab)
-        self.current_task_label.setGeometry(QtCore.QRect(200, 100, 351, 20))  
-        self.current_task_label.setAlignment(QtCore.Qt.AlignCenter) 
-        self.current_task_label.setText("No task selected") 
+        self.current_task_label.setGeometry(QtCore.QRect(200, 100, 351, 20))
+        self.current_task_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.current_task_label.setText("No task selected")
         self.current_task_label.setObjectName("current_task_label")
         self.current_task_label.setStyleSheet("""
                 QLabel {
@@ -235,14 +236,12 @@ class Ui_MainWindow(object):
         self.page_tabs.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         self.progressBar = MultiTaskBar(self.page3_tab)
-        self.progressBar.setGeometry(QtCore.QRect(130, 50, 511, 20))  
+        self.progressBar.setGeometry(QtCore.QRect(130, 50, 511, 20))
         self.progressBar.setObjectName("progressBar")
         self.reset_button = QtWidgets.QPushButton(self.page3_tab)
         self.reset_button.setGeometry(QtCore.QRect(300, 520, 120, 30))
         self.reset_button.setObjectName("reset_button")
         self.reset_button.setText("Reset Tasks")
-
-        
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -250,15 +249,19 @@ class Ui_MainWindow(object):
         self.archive_button.setText(_translate("MainWindow", "archive"))
         self.dashboard_button.setText(_translate("MainWindow", " dashboard"))
         self.textEdit.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'SimSun\'; font-size:13.5pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:7.2pt;\"> </span></p></body></html>"))
+                                         "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                         "p, li { white-space: pre-wrap; }\n"
+                                         "</style></head><body style=\" font-family:\'SimSun\'; font-size:13.5pt; font-weight:400; font-style:normal;\">\n"
+                                         "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:7.2pt;\"> </span></p></body></html>"))
         self.add_text.setText(_translate("MainWindow", "Save for later"))
-        self.page_tabs.setTabText(self.page_tabs.indexOf(self.page1_tab), _translate("MainWindow", "Brain Dump"))
-        self.page_tabs.setTabText(self.page_tabs.indexOf(self.page2_tab), _translate("MainWindow", "Calender"))
+        self.page_tabs.setTabText(self.page_tabs.indexOf(
+            self.page1_tab), _translate("MainWindow", "Brain Dump"))
+        self.page_tabs.setTabText(self.page_tabs.indexOf(
+            self.page2_tab), _translate("MainWindow", "Calender"))
         self.Add_new_button.setText(_translate("MainWindow", "Add"))
-        self.page_tabs.setTabText(self.page_tabs.indexOf(self.page3_tab), _translate("MainWindow", "Focusing"))
+        self.page_tabs.setTabText(self.page_tabs.indexOf(
+            self.page3_tab), _translate("MainWindow", "Focusing"))
+
 
 if __name__ == "__main__":
     import sys
