@@ -5,6 +5,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from archive_window import archive_MainWindow
 from PyQt5.QtCore import Qt
 
+
 class archive_window_function(archive_MainWindow, QMainWindow):
     def __init__(self):
         super().__init__()
@@ -13,6 +14,8 @@ class archive_window_function(archive_MainWindow, QMainWindow):
         self.set_ui()
 
         self.archive_delete.clicked.connect(self.delete)
+        self.archive_export.clicked.connect(self.export_to_txt)
+
 
     def list_content(self):
         conn = sqlite3.connect('archive.db')
@@ -52,3 +55,51 @@ class archive_window_function(archive_MainWindow, QMainWindow):
             conn.close()
 
             self.listView.takeItem(self.listView.row(selected_item))
+    
+    def export_to_txt(self):
+        # Open database connection
+        conn = sqlite3.connect('archive.db')
+        cursor = conn.cursor()
+            
+        # Fetch all content and date from the archive
+        cursor.execute("SELECT content, time FROM archive")
+        rows = cursor.fetchall()
+        conn.close()
+
+        if not rows:
+            QMessageBox.warning(self, "No Data", "There are no records to export.")
+            return
+
+        # Open file dialog for user to select save location
+        options = QtWidgets.QFileDialog.Options()
+        file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self, 
+            "Save TXT File", 
+            "", 
+            "Text Files (*.txt);;All Files (*)", 
+            options=options
+        )
+
+        if not file_path:
+            return  # User canceled the save dialog
+
+        # Ensure the file has .txt extension
+        if not file_path.endswith(".txt"):
+            file_path += ".txt"
+
+        # Write to TXT file
+        try:
+            with open(file_path, "w", encoding="utf-8") as file:
+                file.write("Archive Export\n")
+                file.write("================\n")
+                for content, date in rows:
+                    file.write(f"Content: {content}\n")
+                    file.write(f"Date: {date}\n")
+                    file.write("\n")
+
+            QMessageBox.information(self, "Export Successful", f"TXT exported successfully to {file_path}.")
+
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"An error occurred while saving the file: {str(e)}")
+
+    

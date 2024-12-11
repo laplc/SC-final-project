@@ -10,7 +10,12 @@ from PyQt5.QtCore import Qt, QDate, QTimer
 from TaskItem import TaskItemWithCheckbox, TaskItemWithoutCheckbox
 from TaskItemWidget import TaskItemWidget
 from PyQt5 import QtCore, QtWidgets
-from reset_all_tasks import reset_all_tasks
+import os
+import warnings
+
+os.environ["PYTHONWARNINGS"] = "ignore"
+warnings.filterwarnings("ignore", category=UserWarning, module="PIL")
+
 
 class Func_MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
