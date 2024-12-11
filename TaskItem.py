@@ -69,7 +69,6 @@ class TaskItemBase(QWidget):
             self.on_task_deleted()
     
     def paintEvent(self, event):
-        
         painter = QtGui.QPainter(self)
         color = self.colors.get(self.category, QColor(255, 255, 255))
         painter.setBrush(color)

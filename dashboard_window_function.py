@@ -1,5 +1,6 @@
-import sys, sqlite3
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QListWidgetItem 
+import sys
+import sqlite3
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QListWidgetItem
 from main_window import Ui_MainWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 from archive_window import archive_MainWindow
@@ -8,12 +9,13 @@ from Warning_delete_func import Warning_delete_func
 from Warning_archive_func import Warning_archive_func
 from PyQt5.QtCore import Qt
 
+
 class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
 
-        #connnect signals to functions
+        # connnect signals to functions
         self.dashboard_delete_button.clicked.connect(self.delete)
         self.dashboard_archive_button.clicked.connect(self.archive)
         self.dashboard_deleteall_button.clicked.connect(self.delete_all)
@@ -25,10 +27,9 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
         self.delete_window.delete_completed.connect(self.refresh_list)
         self.archive_window.archive_completed.connect(self.refresh_list)
 
-
         self.list_content()
         self.set_ui()
-    
+
     def set_ui(self):
         self.dashboard_list.setStyleSheet("""
             QListWidget::item {
@@ -53,13 +54,16 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
 
             conn_dashboard = sqlite3.connect('dashboard.db')
             cursor_dashboard = conn_dashboard.cursor()
-            cursor_dashboard.execute("SELECT time FROM dashboard WHERE id = ?", (record_id,))
+            cursor_dashboard.execute(
+                "SELECT time FROM dashboard WHERE id = ?", (record_id,))
             time = cursor_dashboard.fetchone()
             time = time[0]
-            #delete archived content from the list and dashboard db
-            cursor_dashboard.execute("DELETE FROM dashboard WHERE id = ?", (record_id,)) 
+            # delete archived content from the list and dashboard db
+            cursor_dashboard.execute(
+                "DELETE FROM dashboard WHERE id = ?", (record_id,))
             conn_dashboard.commit()
-            self.dashboard_list.takeItem(self.dashboard_list.row(selected_item))
+            self.dashboard_list.takeItem(
+                self.dashboard_list.row(selected_item))
             conn_dashboard.close()
 
             conn_archive = sqlite3.connect('archive.db')
@@ -73,8 +77,7 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
             ''')
             cursor_archive.execute(
                 '''INSERT INTO archive (content, time)
-                VALUES (?, ?)'''
-                , (content, time))
+                VALUES (?, ?)''', (content, time))
             conn_archive.commit()
             conn_archive.close()
 
@@ -88,10 +91,11 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
             conn.commit()
             conn.close()
 
-            self.dashboard_list.takeItem(self.dashboard_list.row(selected_item))
+            self.dashboard_list.takeItem(
+                self.dashboard_list.row(selected_item))
 
     def archive_all(self):
-        #pop up warning window
+        # pop up warning window
         self.archive_window.show()
 
     def delete_all(self):
@@ -99,7 +103,7 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
             when "delete all" is clicked, pop up a warning window
         '''
         self.delete_window.show()
-    
+
     def list_content(self):
         conn = sqlite3.connect('dashboard.db')
         cursor = conn.cursor()
@@ -111,7 +115,7 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
             item = QListWidgetItem(row[1])  # row[1] being content
             item.setData(Qt.UserRole, row[0])  # row[0] being id
             self.dashboard_list.addItem(item)
-        
+
         conn.close()
 
     def refresh_list(self):
@@ -129,23 +133,14 @@ class func_dashboardwindow(QMainWindow, Ui_Dashboard_window):
             item = QListWidgetItem(row[1])  # row[1] being content
             item.setData(Qt.UserRole, row[0])  # row[0] being id
             self.dashboard_list.addItem(item)
-        
+
         conn.close()
-
-
-
-
-
-
-            
-
-            
 
 
 # if __name__ == "__main__":
 #     import sys
 #     app = QtWidgets.QApplication(sys.argv)
-    
+
 #     window = func_dashboardwindow()
 #     window.show()
 
