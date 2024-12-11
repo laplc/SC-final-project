@@ -194,6 +194,16 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         """
         conn = sqlite3.connect('task.db')
         cursor = conn.cursor()
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS tasks (
+            id INTEGER PRIMARY KEY,
+            task TEXT NOT NULL,
+            date TEXT NOT NULL,
+            category TEXT NOT NULL,
+            completed TEXT DEFAULT 'NO'
+        )
+    ''')
+        conn.commit()
 
         query = "SELECT date, category FROM tasks"
         cursor.execute(query)
@@ -275,6 +285,14 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         '''
         conn = sqlite3.connect('tracker.db')
         cursor = conn.cursor()
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS tracker (
+            id INTEGER PRIMARY KEY,
+            content TEXT NOT NULL,
+            time INTEGER DEFAULT 0
+        )
+        ''')
+        conn.commit()
         cursor.execute("SELECT id, content, time FROM tracker")
         rows = cursor.fetchall()
         conn.close()
