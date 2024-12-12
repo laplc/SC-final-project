@@ -24,6 +24,7 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
 
+        self.initialize_db()
         self.setupUi(self)
         self.colors = {
             "Deadline": QColor(255, 200, 200),
@@ -481,6 +482,61 @@ class Func_MainWindow(QMainWindow, Ui_MainWindow):
         if not self.current_task_widget:
             self.subwindow = func_dashboardwindow()
             self.subwindow.show()
+    
+    def initialize_db(self):
+        '''
+            create databases when the program is initialized
+        '''
+        conn = sqlite3.connect('tracker.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS tracker (
+            id INTEGER PRIMARY KEY,
+            content TEXT NOT NULL,
+            time INTEGER DEFAULT 0
+        )
+        ''')
+        conn.commit()
+        conn.close()
+
+        conn = sqlite3.connect('archive.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS archive (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            content TEXT NOT NULL,
+            time TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+        ''')
+        conn.commit()
+        conn.close()
+
+        conn = sqlite3.connect('dashboard.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS dashboard (
+                id INTEGER PRIMARY KEY,
+                content TEXT NOT NULL,
+                time TEXT NOT NULL
+            )
+            ''')
+        conn.commit()
+        conn.close()
+
+        conn = sqlite3.connect('task.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS tasks (
+                id INTEGER PRIMARY KEY,
+                task TEXT NOT NULL,
+                date TEXT NOT NULL,
+                category TEXT NOT NULL,
+                completed TEXT DEFAULT 'NO'
+            )
+            ''')
+        conn.commit()
+        conn.close()
+
 
 
 if __name__ == "__main__":
