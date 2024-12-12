@@ -35,7 +35,7 @@ class MultiTaskBar(QWidget):
 
     def paintEvent(self, event):
         """
-            Override the paintEvent to draw the custom progress bar.
+            to draw the custom progress bar.
 
             Args:
                 event: The paint event object.
