@@ -25,7 +25,13 @@ class archive_window_function(archive_MainWindow, QMainWindow):
         """
         conn = sqlite3.connect('archive.db')
         cursor = conn.cursor()
-
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS archive (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            content TEXT NOT NULL,
+            time TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+        ''')
         cursor.execute("SELECT id, content FROM archive")
         rows = cursor.fetchall()
 

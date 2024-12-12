@@ -257,7 +257,7 @@ class Ui_MainWindow(object):
         self.page_tabs.setTabText(self.page_tabs.indexOf(
             self.page1_tab), _translate("MainWindow", "Brain Dump"))
         self.page_tabs.setTabText(self.page_tabs.indexOf(
-            self.page2_tab), _translate("MainWindow", "Calender"))
+            self.page2_tab), _translate("MainWindow", "Calendar"))
         self.Add_new_button.setText(_translate("MainWindow", "Add"))
         self.page_tabs.setTabText(self.page_tabs.indexOf(
             self.page3_tab), _translate("MainWindow", "Focusing"))
